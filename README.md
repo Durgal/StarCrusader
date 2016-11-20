@@ -8,6 +8,8 @@ To contribute to our project, first [request a feature](https://github.com/cs360
 
 Once you receive positive feedback, implement the feature and create a new pull request.  Name it with the same name as your feature request.  Provide the same information you provided with the feature request as well.
 
+In order for a new feature to be committed, it must follow [PEP8 Python Coding Standards.](https://www.python.org/dev/peps/pep-0008/)
+
 
 
 Request a Feature
