@@ -39,5 +39,7 @@ Provide as much of the following information as possible:
 Contact the Contributors
 ------------------------
 Chris Granat - chrisgranat@gmail.com
+
 Verity Cook - cook9874@pacificu.edu
+
 Michael Souza - souz2019@pacificu.edu
