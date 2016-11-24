@@ -3,42 +3,53 @@
 import pygame
 from pygame.locals import *
 from spaceship import *
-from universe import Universe
+
+HEIGHT = 800
+WIDTH = 800
+FPS = 60
+
+BLACK = (0, 0, 0)
 
 
 def main():
     pygame.init()
-    screen = pygame.display.set_mode((800, 800))
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Star Crusader")
+    clock = pygame.time.Clock()
 
-    background = pygame.Surface(screen.get_size())
-    background = background.convert()
-    background.fill((0, 0, 0))
+    dt = clock.tick(FPS) / 1000.0
 
-    screen.blit(background, (0, 0))
-    pygame.display.flip()
+    all_sprites = pygame.sprite.Group()
 
-    white_asteroid1 = 'Sprites/whiteAsteroid1.png'
-    white_asteroid2 = 'Sprites/whiteAsteroid2.png'
-    white_asteroid3 = 'Sprites/whiteAsteroid3.png'
+    spaceship = Spaceship(dt)
 
-    universe = Universe('Universe/universe_test.txt', white_asteroid1, white_asteroid2, white_asteroid3)
-    spaceship = Spaceship()
+    all_sprites.add(spaceship)
 
-    universe.create_random_universe()
-    universe.__read_file__('Universe/universe_test.txt')
+    running = True
+    while running:
+        clock.tick(FPS)
 
-    while 1:
+        fps = clock.get_fps()
+
+        # events
         for event in pygame.event.get():
             if event.type == QUIT:
-                return
+                running = False
 
         if pygame.key.get_pressed()[pygame.K_w] != 0:
-            spaceship.update()
+            spaceship.get_event('accelerate')
+        if pygame.key.get_pressed()[pygame.K_a] != 0:
+            spaceship.get_event('rotate_l')
+        if pygame.key.get_pressed()[pygame.K_d] != 0:
+            spaceship.get_event('rotate_r')
 
-        screen.blit(background, (0, 0))
-        universe.draw_asteroids(screen)
-        spaceship.draw(screen)
+        # update
+        all_sprites.update()
+
+        # render
+        screen.fill(BLACK)
+        all_sprites.draw(screen)
+        spaceship.debugging(screen, fps)
         pygame.display.flip()
 
 
