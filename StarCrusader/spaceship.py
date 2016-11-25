@@ -8,7 +8,7 @@ STARTING_POS_Y = 450
 ACCELERATE = 'accelerate'
 ROTATE_LEFT = 'rotate_l'
 ROTATE_RIGHT = 'rotate_r'
-ACCELERATION_RATE = 15
+ACCELERATION_RATE = 7
 ROTATION_RATE = 200
 TERMINAL_VELOCITY = vec(5, 5)
 FUEL_CAPACITY = 100
@@ -65,7 +65,7 @@ class Spaceship(pygame.sprite.Sprite):
             position1 = font.render('Position [x,y]: ', 1, (255, 255, 255))
             velocity = font.render(str(self.velocity), 1, (255, 255, 255))
             velocity1 = font.render('Velocity [x,y]: ', 1, (255, 255, 255))
-            frames = font.render(str(fps), 1, (255, 255, 255))
+            frames = font.render(str(int(fps)), 1, (255, 255, 255))
             fuel = font.render('Fuel: ', 1, (255, 255, 255))
             fuel1 = font.render(str(self.fuel), 1, (255, 255, 255))
 
