@@ -1,6 +1,8 @@
 #!/usr/bin/python
 
 import pygame
+import random
+from asteroid import Asteroid
 
 RED = (255, 0, 0)
 YELLOW = (0, 255, 0)
@@ -47,3 +49,14 @@ class Universe(Level):
         Level.__init__(self, player)
 
         self.type = "universe"
+
+        self.asteroid_set = []
+        for count in range(60):
+            self.asteroid_set.append(self.generate_asteroid())
+
+    def add_asteroids(self, sprite_list):
+        sprite_list.add(self.asteroid_set)
+
+    @staticmethod
+    def generate_asteroid():
+        return Asteroid(random.randint(0, 800), random.randint(0, 800))
