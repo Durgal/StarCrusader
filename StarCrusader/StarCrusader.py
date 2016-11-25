@@ -2,11 +2,13 @@
 
 import pygame
 from pygame.locals import *
-from spaceship import *
+from spaceship import Spaceship
+from spaceship import Camera
 
 HEIGHT = 800
 WIDTH = 800
 FPS = 60
+MS = 1000.0
 
 BLACK = (0, 0, 0)
 
@@ -17,18 +19,18 @@ def main():
     pygame.display.set_caption("Star Crusader")
     clock = pygame.time.Clock()
 
-    dt = clock.tick(FPS) / 1000.0
-
     all_sprites = pygame.sprite.Group()
 
-    spaceship = Spaceship(dt)
+    spaceship = Spaceship()
+    camera = Camera(WIDTH, HEIGHT)
 
     all_sprites.add(spaceship)
 
     running = True
     while running:
-        clock.tick(FPS)
-
+        milliseconds = clock.tick(FPS)
+        dt = milliseconds / MS
+        spaceship.set_dt(dt)
         fps = clock.get_fps()
 
         # events
@@ -45,10 +47,12 @@ def main():
 
         # update
         all_sprites.update()
+        camera.update(spaceship)
 
         # render
         screen.fill(BLACK)
-        all_sprites.draw(screen)
+        for sprite in all_sprites:
+            screen.blit(sprite.image, camera.apply(sprite))
         spaceship.debugging(screen, fps)
         pygame.display.flip()
 
