@@ -4,6 +4,8 @@ import pygame
 from pygame.locals import *
 import level
 from hero import Hero
+from spaceship import Spaceship
+from spaceship import Camera
 
 
 RED = (255, 0, 0)
@@ -15,6 +17,24 @@ BLACK = (0, 0, 0)
 HEIGHT = 900
 WIDTH = 900
 FPS = 60
+MS = 1000
+
+
+def get_input(level_type, player):
+    """ Input Function for both Universe and Planet Levels """
+    if level_type == "universe":
+        if pygame.key.get_pressed()[pygame.K_w] != 0:
+            player.get_event('accelerate')
+        if pygame.key.get_pressed()[pygame.K_a] != 0:
+            player.get_event('rotate_l')
+        if pygame.key.get_pressed()[pygame.K_d] != 0:
+            player.get_event('rotate_r')
+
+    if level_type == "planet": # TODO: this is just proof of concept
+        if pygame.key.get_pressed()[pygame.K_a] != 0:
+            player.move_left()
+        if pygame.key.get_pressed()[pygame.K_d] != 0:
+            player.move_right()
 
 
 def main():
@@ -26,14 +46,18 @@ def main():
     pygame.display.set_caption("Star Crusader")
 
     # Create Spaceship
-    #player = Spaceship()
+    player = Spaceship()
+    camera = Camera(WIDTH, HEIGHT)
+
+    # Set current level (Universe)
+    current_level = level.Universe(player)
 
     # Create Hero
-    player = Hero()
+    #player = Hero() # for planet
 
-    # Set current level (Planet or Universe)
-    current_level = level.Planet(player)
-    player.level = current_level
+    # Set current level (Planet)
+    #current_level = level.Planet(player) # for planet
+    #player.level = current_level # for planet
 
     # Load current level sprites
     sprite_list = pygame.sprite.Group()
@@ -54,27 +78,26 @@ def main():
         # Limit to 60 FPS
         clock.tick(FPS)
 
-        # TODO: get user input here? Or perhaps per level... (ie universe vs planet)
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_a:
-                player.move_left()
-            if event.key == pygame.K_d:
-                player.move_right()
-
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_a and player.change_x < 0:
-                player.stop()
-            if event.key == pygame.K_d and player.change_x > 0:
-                player.stop()
+        # Checks for input based on player type (ship vs hero)
+        get_input(current_level.get_type(), player) # TODO: Perhaps move to level...? (ie universe vs planet)
 
         # Update game entities
         sprite_list.update()
+        camera.update(player) # only for universe
 
         # Draw current level
         current_level.draw(screen)
 
         # Draw level entities
-        sprite_list.draw(screen)
+        #sprite_list.draw(screen)
+
+        # For Spaceship (comment out above draw function
+        milliseconds = clock.tick(FPS)
+        dt = milliseconds / MS
+        player.set_dt(dt)
+        player.debugging(screen, clock.get_fps())
+        for sprite in sprite_list:
+            screen.blit(sprite.image, camera.apply(sprite))
 
         # Update screen
         pygame.display.flip()

@@ -20,7 +20,9 @@ class Level():
     def draw(self, screen):
 
         screen.fill(BLACK)
-        screen.blit(self.background, (0,0))
+
+        if self.background:
+            screen.blit(self.background, (0,0))
 
     def get_type(self):
 
