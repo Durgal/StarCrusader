@@ -3,8 +3,8 @@
 import pygame
 vec = pygame.math.Vector2
 
-STARTING_POS_X = 400
-STARTING_POS_Y = 400
+STARTING_POS_X = 450
+STARTING_POS_Y = 450
 ACCELERATE = 'accelerate'
 ROTATE_LEFT = 'rotate_l'
 ROTATE_RIGHT = 'rotate_r'
