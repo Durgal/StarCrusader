@@ -1,12 +1,25 @@
 #!/usr/bin/python
 
+#########################################
+# File:         level.py
+# Author:       Michael / Chris
+# Date:         12/09/16
+# Class:        Open Source
+# Assignment:   Final Project
+# Purpose:      Provides basic level
+#               functionality
+#########################################
+
 import pygame
 import random
+import math
 from asteroid import Asteroid
 from spaceship import Spaceship
 from spaceship import Camera
 from hero import Hero
 
+
+# Constants
 RED = (255, 0, 0)
 YELLOW = (0, 255, 0)
 BLUE = (0, 0, 255)
@@ -21,7 +34,6 @@ ASTEROID5 = 5
 ASTEROID6 = 6
 ASTEROID_IMAGE_COUNT = 6
 
-
 WIDTH = 900
 HEIGHT = 900
 CHUNK_SIZE = 900
@@ -34,11 +46,12 @@ ASTEROID_INDEX = 1
 
 
 class Level:
-    "Parent class of Universe and Planet"
+    """ Parent class of Universe and Planet """
     def __init__(self, player):
         self.background = None
         self.type = None
         self.player = player
+        self.ANGLE = 0
 
     def draw(self, screen):
         screen.fill(BLACK)
@@ -50,7 +63,7 @@ class Level:
 
 
 class Planet(Level):
-    "Generic Planet level"
+    """ Generic Planet level """
     def __init__(self, screen):
         player = Hero()
         Level.__init__(self, player)
@@ -64,16 +77,43 @@ class Planet(Level):
             self.player.move_left()
         if pygame.key.get_pressed()[pygame.K_d] != 0:
             self.player.move_right()
+        if pygame.key.get_pressed()[pygame.K_r] != 0:
+            self.rotate(self.player)
 
     def update(self):
+        """ Update all entities on the Planet """
         self.player.update()
 
+    def rotate(self, object):
+        """ Rotates an entity around a given sized circle """
+        origin_x = 450
+        origin_y = 450
+        object.rect.x = origin_y + (object.center_x - (origin_y)) * math.cos(self.ANGLE) - (object.center_y - (origin_x)) * math.sin(self.ANGLE)
+        object.rect.y = origin_x + (object.center_x - (origin_y)) * math.sin(self.ANGLE) + (object.center_y - (origin_x)) * math.cos(self.ANGLE)
+        self.ANGLE += 1
+
+        if self.ANGLE > 360:
+            self.ANGLE = 0
+
     def set_dt(self, dt):
-        print() #Dont do anything...
+        print() #Dont do anything
 
     def render_level(self):
+        """ Draw background and all entities on Planet """
         self.draw(self.screen)
         self.screen.blit(self.player.image, self.player.get_pos())
+
+        if pygame.font:
+            font = pygame.font.Font("courbd.ttf", 12)
+
+            cur_x = font.render('X: ' + str(self.player.rect.x), 1, (255, 255, 255))
+            cur_y = font.render('Y: ' + str(self.player.rect.y), 1, (255, 255, 255))
+            cur_a = font.render('A: ' + str(self.ANGLE), 1, (255, 255, 255))
+
+            self.screen.blit(cur_x, (5,880))
+            self.screen.blit(cur_y, (5,865))
+            self.screen.blit(cur_a, (5,850))
+
 
 
 class Universe(Level):

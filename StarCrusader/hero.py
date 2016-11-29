@@ -1,7 +1,17 @@
 #!/usr/bin/python
 
+#########################################
+# File:         hero.py
+# Author:       Chris Granat
+# Date:         12/09/16
+# Class:        Open Source
+# Assignment:   Final Project
+# Purpose:      Provides main
+#               functionality
+#               for hero class
+#########################################
+
 import pygame
-import math
 from sprite_functions import Sprite
 
 
@@ -18,10 +28,13 @@ class Hero(pygame.sprite.Sprite):
         self.change_x = 0
         self.change_y = 0
         self.direction = 0
+
         self.image = sprite.get_image(0, 0, 48, 48)
+        self.center_x = STARTING_POS_X - self.image.get_size()[0] / 2
+        self.center_y = STARTING_POS_Y - self.image.get_size()[1] / 2
         self.rect = self.image.get_rect()
-        self.rect.x = STARTING_POS_X - self.image.get_size()[0]/2
-        self.rect.y = STARTING_POS_Y - self.image.get_size()[1]/2
+        self.rect.x = self.center_x
+        self.rect.y = self.center_y
 
 
     def get_pos(self):

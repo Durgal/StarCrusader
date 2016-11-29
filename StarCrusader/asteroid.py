@@ -1,9 +1,19 @@
 #!/usr/bin/python
 
+#########################################
+# File:         asteroid.py
+# Author:       Michael Souza
+# Date:         12/09/16
+# Class:        Open Source
+# Assignment:   Final Project
+# Purpose:      Provides main
+#               functionality
+#               for asteroid class
+#########################################
+
 import pygame
 import random
 from spaceship import Spaceship
-
 
 ASTEROID1 = 1
 ASTEROID2 = 2

@@ -1,5 +1,16 @@
 #!/usr/bin/python
 
+#########################################
+# File:         sprite_functions.py
+# Author:       Chris Granat
+# Date:         12/09/16
+# Class:        Open Source
+# Assignment:   Final Project
+# Purpose:      Provides main
+#               functionality
+#               for sprite class
+#########################################
+
 import pygame
 
 RED = (255, 0, 0)

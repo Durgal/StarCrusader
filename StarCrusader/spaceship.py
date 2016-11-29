@@ -1,5 +1,16 @@
 #!/usr/bin/python
 
+#########################################
+# File:         spaceship.py
+# Author:       Michael Souza
+# Date:         12/09/16
+# Class:        Open Source
+# Assignment:   Final Project
+# Purpose:      Provides main
+#               functionality
+#               for spaceship class
+#########################################
+
 import pygame
 vec = pygame.math.Vector2
 

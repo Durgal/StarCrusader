@@ -1,5 +1,14 @@
 #!/usr/bin/python
 
+#########################################
+# Project:      Star Crusader
+# Author:       Group 6
+# Date:         12/09/16
+# Class:        Open Source
+# Assignment:   Final Project
+# Purpose:      Main game loop
+#########################################
+
 import pygame
 from pygame.locals import *
 import level
@@ -38,8 +47,6 @@ def main():
 
     # Set current level (Planet)
     current_level = level.Planet(screen)
-
-    #sprite_list.add(player)
 
     # Clock manages how fast updates occur
     clock = pygame.time.Clock()
