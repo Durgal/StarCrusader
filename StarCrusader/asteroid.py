@@ -43,7 +43,7 @@ class Asteroid(pygame.sprite.Sprite):
     def kill_asteroid(self):
         self.kill()
 
-    def update(self, spaceship):
+    def update(self, spaceship_group):
         if self.rot_speed % 2 == 0:
             self.rotation = (self.rotation + self.rot_speed * self.dt) % 360
         else:
@@ -51,7 +51,7 @@ class Asteroid(pygame.sprite.Sprite):
         self.rect.center = self.image.get_rect().center
         self.rotate_sprite()
 
-        for sprite in spaceship:
+        for sprite in spaceship_group:
             if pygame.sprite.collide_mask(self, sprite):
                 self.kill_asteroid()
                 sprite.collided(self.damage)

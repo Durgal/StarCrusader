@@ -3,6 +3,8 @@
 import pygame
 import random
 from asteroid import Asteroid
+from spaceship import Spaceship
+from spaceship import Camera
 
 RED = (255, 0, 0)
 YELLOW = (0, 255, 0)
@@ -18,6 +20,8 @@ ASTEROID5 = 5
 ASTEROID6 = 6
 ASTEROID_IMAGE_COUNT = 6
 
+WIDTH = 900
+HEIGHT = 900
 CHUNK_SIZE = 900
 CHUNK_HALF_SIZE = 450
 RENDER_DISTANCE = 1
@@ -59,30 +63,40 @@ class Planet(Level):
 
 
 class Universe(Level):
-    def __init__(self, player, camera, sprite_group, screen):
-        self.group = sprite_group
-        Level.__init__(self, player)
+    def __init__(self, screen, spaceship_group, asteroid_group):
+        self.asteroid_group = asteroid_group
+        self.spaceship_group = spaceship_group
+        self.camera = Camera(WIDTH, HEIGHT)
+        self.spaceship = Spaceship(self.spaceship_group)
+        self.screen = screen
+        Level.__init__(self, self.spaceship)
         self.type = "universe"
         self.asteroid_image_set = []
         self.asteroid_damage_set = []
         self.load_asteroid_data()
 
-        self.camera = camera
-        self.spaceship = player
-        self.screen = screen
-
-        self.player_chunk = player.player_chunk
+        self.player_chunk = self.spaceship.player_chunk
         self.current_rendered_chunks = []
         self.sprite_chunks = []
         self.player_chunk_coords = [0, 0]
         self.player_coords = [self.spaceship.rect.x, self.spaceship.rect.y]
-
         self.asteroid_set = []
         self.new_chunk = []
 
+    def get_input(self):
+        """ Input Function for both Universe and Planet Levels """
+        if pygame.key.get_pressed()[pygame.K_w] != 0:
+            self.spaceship.get_event('accelerate')
+        if pygame.key.get_pressed()[pygame.K_a] != 0:
+            self.spaceship.get_event('rotate_l')
+        if pygame.key.get_pressed()[pygame.K_d] != 0:
+            self.spaceship.get_event('rotate_r')
+        if pygame.key.get_pressed()[pygame.K_SPACE] != 0:
+            self.spaceship.get_event('shoot')
+
     def generate_asteroid(self, lower_x, upper_x, lower_y, upper_y):
         random_asteroid = random.randint(0, 5)
-        return Asteroid(self.group, self.asteroid_image_set[random_asteroid], random.randint(lower_x, upper_x), random.randint(lower_y, upper_y), self.asteroid_damage_set[random_asteroid])
+        return Asteroid(self.asteroid_group, self.asteroid_image_set[random_asteroid], random.randint(lower_x, upper_x), random.randint(lower_y, upper_y), self.asteroid_damage_set[random_asteroid])
 
     def generate_chunk(self, chunk_x_coord, chunk_y_coord):
         chunk_already_exists = False
@@ -155,7 +169,7 @@ class Universe(Level):
             player_coords = font.render('Player chunk coords: ', 1, (255, 255, 255))
             num_chunks1 = font.render(str(len(self.current_rendered_chunks)), 1, (255, 255, 255))
             num_chunks = font.render('Chunks rendered: ', 1, (255, 255, 255))
-            num_sprites1 = font.render(str(len(self.group)), 1, (255, 255, 255))
+            num_sprites1 = font.render(str(len(self.asteroid_group)), 1, (255, 255, 255))
             num_sprites = font.render('Sprites rendered: ', 1, (255, 255, 255))
 
             pc1_text = player_coords1.get_rect().move(150, 880)
@@ -208,3 +222,24 @@ class Universe(Level):
         self.asteroid_image_set.append(image6)
         damage6 = 8
         self.asteroid_damage_set.append(damage6)
+
+    def render_level(self):
+        self.camera.update(self.spaceship)
+
+        for asteroid in self.asteroid_group:
+            self.screen.blit(asteroid.image, self.camera.apply(asteroid))
+
+        for sprite in self.spaceship_group:
+            self.screen.blit(sprite.image, self.camera.apply(sprite))
+
+        self.spaceship.debugging(self.screen, 60)
+        self.debugging()
+
+    def set_dt(self, dt):
+        self.spaceship.set_dt(dt)
+
+    def get_spaceship(self):
+        return self.spaceship
+
+    def get_camera(self):
+        return self.camera
