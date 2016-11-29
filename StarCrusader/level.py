@@ -12,7 +12,7 @@ BLACK = (0, 0, 0)
 
 
 class Level():
-
+    "Parent class of Universe and Planet"
     def __init__(self, player):
 
         self.background = None
@@ -32,7 +32,7 @@ class Level():
 
 
 class Planet(Level):
-
+    "Generic Planet level"
     def __init__(self, player):
 
         Level.__init__(self, player)
@@ -43,7 +43,7 @@ class Planet(Level):
 
 
 class Universe(Level):
-
+    "Universe level"
     def __init__(self, player):
 
         Level.__init__(self, player)

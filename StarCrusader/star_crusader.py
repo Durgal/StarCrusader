@@ -47,18 +47,18 @@ def main():
     pygame.display.set_caption("Star Crusader")
 
     # Create Spaceship
-    player = Spaceship()
-    camera = Camera(WIDTH, HEIGHT)
+    #player = Spaceship()
+    #camera = Camera(WIDTH, HEIGHT)
 
     # Set current level (Universe)
-    current_level = level.Universe(player)
+    #current_level = level.Universe(player)
 
     # Create Hero
-    # player = Hero() # for planet
+    player = Hero() # for planet
 
     # Set current level (Planet)
-    # current_level = level.Planet(player) # for planet
-    # player.level = current_level # for planet
+    current_level = level.Planet(player) # for planet
+    player.level = current_level # for planet
 
     # Load current level sprites
     sprite_list = pygame.sprite.Group()
@@ -87,25 +87,25 @@ def main():
         # Update game entities
         sprite_list.update()
         asteroid_group.update()
-        camera.update(player)  # only for universe
+        #camera.update(player)  # only for universe
 
         # Draw current level
         current_level.draw(screen)
 
         # Draw level entities
-        # sprite_list.draw(screen)
+        sprite_list.draw(screen)
 
         # For Spaceship (comment out above draw function
-        dt = milliseconds / MS
-        player.set_dt(dt)
+        #dt = milliseconds / MS
+        #player.set_dt(dt)
 
-        for asteroid in asteroid_group:
-            screen.blit(asteroid.image, camera.apply(asteroid))
+        #for asteroid in asteroid_group:
+        #    screen.blit(asteroid.image, camera.apply(asteroid))
 
-        for sprite in sprite_list:
-            screen.blit(sprite.image, camera.apply(sprite))
+        #for sprite in sprite_list:
+        #    screen.blit(sprite.image, camera.apply(sprite))
 
-        player.debugging(screen, clock.get_fps())
+        #player.debugging(screen, clock.get_fps())
 
         # Update screen
         pygame.display.flip()
