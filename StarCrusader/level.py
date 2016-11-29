@@ -87,10 +87,10 @@ class Planet(Level):
     def rotate(self, object):
         """ Rotates an entity around a given sized circle """
         origin_x = 450
-        origin_y = 450
-        object.rect.x = origin_y + (object.center_x - (origin_y)) * math.cos(self.ANGLE) - (object.center_y - (origin_x)) * math.sin(self.ANGLE)
-        object.rect.y = origin_x + (object.center_x - (origin_y)) * math.sin(self.ANGLE) + (object.center_y - (origin_x)) * math.cos(self.ANGLE)
-        self.ANGLE += 1
+        origin_y = 1500
+        object.rect.x = origin_x + (object.center_x - (origin_x)) * math.cos(self.ANGLE) - (object.center_y - (origin_y)) * math.sin(self.ANGLE)
+        object.rect.y = origin_y + (object.center_x - (origin_x)) * math.sin(self.ANGLE) + (object.center_y - (origin_y)) * math.cos(self.ANGLE)
+        self.ANGLE += .025
 
         if self.ANGLE > 360:
             self.ANGLE = 0
