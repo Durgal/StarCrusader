@@ -105,7 +105,6 @@ class Universe(Level):
                 chunk_already_exists = True
 
         if not chunk_already_exists:
-            # self.new_chunk = self.asteroid_set
             for sprite in self.new_chunk:
                 self.new_chunk.remove(sprite)
 
@@ -149,17 +148,20 @@ class Universe(Level):
     def remove_far_chunks(self):
         for chunk in self.current_rendered_chunks:
             chunk_already_removed = False
-            if self.player_chunk_coords[X_COORD] - RENDER_DISTANCE > chunk[COORDS][X_COORD] or self.player_chunk_coords[X_COORD] + RENDER_DISTANCE < chunk[COORDS][X_COORD] and chunk_already_removed == False:
-                for asteroid in chunk[ASTEROID_INDEX]:
-                    asteroid.kill_asteroid()
-                self.current_rendered_chunks.remove(chunk)
-                chunk_already_removed = True
 
-            if self.player_chunk_coords[Y_COORD] - RENDER_DISTANCE > chunk[COORDS][Y_COORD] or self.player_chunk_coords[Y_COORD] + RENDER_DISTANCE < chunk[COORDS][Y_COORD] and chunk_already_removed == False:
-                for asteroid in chunk[ASTEROID_INDEX]:
-                    asteroid.kill_asteroid()
-                self.current_rendered_chunks.remove(chunk)
-                chunk_already_removed = True
+            if not chunk_already_removed:
+                if self.player_chunk_coords[X_COORD] - RENDER_DISTANCE > chunk[COORDS][X_COORD] or self.player_chunk_coords[X_COORD] + RENDER_DISTANCE < chunk[COORDS][X_COORD]:
+                    for asteroid in chunk[ASTEROID_INDEX]:
+                        asteroid.kill_asteroid()
+                    self.current_rendered_chunks.remove(chunk)
+                    chunk_already_removed = True
+
+            if not chunk_already_removed:
+                if self.player_chunk_coords[Y_COORD] - RENDER_DISTANCE > chunk[COORDS][Y_COORD] or self.player_chunk_coords[Y_COORD] + RENDER_DISTANCE < chunk[COORDS][Y_COORD]:
+                    for asteroid in chunk[ASTEROID_INDEX]:
+                        asteroid.kill_asteroid()
+                    self.current_rendered_chunks.remove(chunk)
+                    chunk_already_removed = True
 
     def debugging(self):
         if pygame.font:
