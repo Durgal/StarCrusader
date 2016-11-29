@@ -26,6 +26,10 @@ BLUE = (0, 0, 255)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
+WIDTH = 900
+HEIGHT = 900
+
+# Universe
 ASTEROID1 = 1
 ASTEROID2 = 2
 ASTEROID3 = 3
@@ -34,8 +38,6 @@ ASTEROID5 = 5
 ASTEROID6 = 6
 ASTEROID_IMAGE_COUNT = 6
 
-WIDTH = 900
-HEIGHT = 900
 CHUNK_SIZE = 900
 CHUNK_HALF_SIZE = 450
 RENDER_DISTANCE = 1
@@ -43,6 +45,11 @@ COORDS = 0
 X_COORD = 0
 Y_COORD = 1
 ASTEROID_INDEX = 1
+
+# Planet
+CENTER_X = 430
+CENTER_Y = 1550
+PLAYER_SPEED = .005
 
 
 class Level:
@@ -74,26 +81,31 @@ class Planet(Level):
     def get_input(self):
         """ Input Function for Planet Level """
         if pygame.key.get_pressed()[pygame.K_a] != 0:
-            self.player.move_left()
+            self.rotate_left(self.player)
         if pygame.key.get_pressed()[pygame.K_d] != 0:
-            self.player.move_right()
-        if pygame.key.get_pressed()[pygame.K_r] != 0:
-            self.rotate(self.player)
+            self.rotate_right(self.player)
 
     def update(self):
         """ Update all entities on the Planet """
         self.player.update()
 
-    def rotate(self, object):
-        """ Rotates an entity around a given sized circle """
-        origin_x = 450
-        origin_y = 1500
-        object.rect.x = origin_x + (object.center_x - (origin_x)) * math.cos(self.ANGLE) - (object.center_y - (origin_y)) * math.sin(self.ANGLE)
-        object.rect.y = origin_y + (object.center_x - (origin_x)) * math.sin(self.ANGLE) + (object.center_y - (origin_y)) * math.cos(self.ANGLE)
-        self.ANGLE += .025
+    def rotate_right(self, object):
+        """ Rotates an entity right around a given sized circle """
+        object.rect.x = CENTER_X + (object.center_x - (CENTER_X)) * math.cos(self.ANGLE) - (object.center_y - (CENTER_Y)) * math.sin(self.ANGLE)
+        object.rect.y = CENTER_Y + (object.center_x - (CENTER_X)) * math.sin(self.ANGLE) + (object.center_y - (CENTER_Y)) * math.cos(self.ANGLE)
+        self.ANGLE += PLAYER_SPEED
 
         if self.ANGLE > 360:
             self.ANGLE = 0
+
+    def rotate_left(self, object):
+        """ Rotates an entity left around a given sized circle """
+        object.rect.x = CENTER_X + (object.center_x - (CENTER_X)) * math.cos(self.ANGLE) - (object.center_y - (CENTER_Y)) * math.sin(self.ANGLE)
+        object.rect.y = CENTER_Y + (object.center_x - (CENTER_X)) * math.sin(self.ANGLE) + (object.center_y - (CENTER_Y)) * math.cos(self.ANGLE)
+        self.ANGLE -= PLAYER_SPEED
+
+        if self.ANGLE < 0:
+            self.ANGLE = 360
 
     def set_dt(self, dt):
         print() #Dont do anything
