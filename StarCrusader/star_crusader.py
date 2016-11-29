@@ -30,6 +30,8 @@ def get_input(level_type, player):
             player.get_event('rotate_l')
         if pygame.key.get_pressed()[pygame.K_d] != 0:
             player.get_event('rotate_r')
+        if pygame.key.get_pressed()[pygame.K_SPACE] != 0:
+            player.get_event('shoot')
 
     if level_type == "planet": # TODO: this is just proof of concept
         if pygame.key.get_pressed()[pygame.K_a] != 0:
@@ -46,12 +48,14 @@ def main():
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Star Crusader")
 
+    sprite_list = pygame.sprite.Group()
+    asteroid_group = pygame.sprite.Group()
     # Create Spaceship
-    player = Spaceship()
+    player = Spaceship(sprite_list)
     camera = Camera(WIDTH, HEIGHT)
 
     # Set current level (Universe)
-    current_level = level.Universe(player)
+    current_level = level.Universe(player, camera, asteroid_group, screen)
 
     # Create Hero
     # player = Hero() # for planet
@@ -61,10 +65,9 @@ def main():
     # player.level = current_level # for planet
 
     # Load current level sprites
-    sprite_list = pygame.sprite.Group()
-    asteroid_group = pygame.sprite.Group()
-    sprite_list.add(player)
-    level.Universe(player).add_asteroids(asteroid_group)
+
+
+    # sprite_list.add(player)
 
     # Clock manages how fast updates occur
     clock = pygame.time.Clock()
@@ -84,9 +87,10 @@ def main():
         # Checks for input based on player type (ship vs hero)
         get_input(current_level.get_type(), player)  # TODO: Perhaps move to level...? (ie universe vs planet)
 
-        # Update game entities
+        # Update game
         sprite_list.update()
-        asteroid_group.update()
+        asteroid_group.update(sprite_list)
+        current_level.update()
         camera.update(player)  # only for universe
 
         # Draw current level
@@ -106,6 +110,7 @@ def main():
             screen.blit(sprite.image, camera.apply(sprite))
 
         player.debugging(screen, clock.get_fps())
+        current_level.debugging()
 
         # Update screen
         pygame.display.flip()
