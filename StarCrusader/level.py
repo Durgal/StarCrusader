@@ -1,17 +1,35 @@
 #!/usr/bin/python
 
+#########################################
+# File:         level.py
+# Author:       Michael / Chris
+# Date:         12/09/16
+# Class:        Open Source
+# Assignment:   Final Project
+# Purpose:      Provides basic level
+#               functionality
+#########################################
+
 import pygame
 import random
+import math
 from asteroid import Asteroid
 from spaceship import Spaceship
 from spaceship import Camera
+from hero import Hero
 
+
+# Constants
 RED = (255, 0, 0)
 YELLOW = (0, 255, 0)
 BLUE = (0, 0, 255)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
+WIDTH = 900
+HEIGHT = 900
+
+# Universe
 ASTEROID1 = 1
 ASTEROID2 = 2
 ASTEROID3 = 3
@@ -20,8 +38,6 @@ ASTEROID5 = 5
 ASTEROID6 = 6
 ASTEROID_IMAGE_COUNT = 6
 
-WIDTH = 900
-HEIGHT = 900
 CHUNK_SIZE = 900
 CHUNK_HALF_SIZE = 450
 RENDER_DISTANCE = 1
@@ -30,39 +46,90 @@ X_COORD = 0
 Y_COORD = 1
 ASTEROID_INDEX = 1
 
+# Planet
+CENTER_X = 430
+CENTER_Y = 1550
+PLAYER_SPEED = .005
+
 
 class Level:
-
+    """ Parent class of Universe and Planet """
     def __init__(self, player):
-
         self.background = None
         self.type = None
         self.player = player
+        self.ANGLE = 0
 
     def draw(self, screen):
-
         screen.fill(BLACK)
-
         if self.background:
             screen.blit(self.background, (0,0))
 
     def get_type(self):
-
         return self.type
 
 
 class Planet(Level):
-
-    def __init__(self, player):
-
+    """ Generic Planet level """
+    def __init__(self, screen):
+        player = Hero()
         Level.__init__(self, player)
-
+        self.screen = screen
         self.type = "planet"
-
         self.background = pygame.image.load("sprites/planet.png").convert()
+
+    def get_input(self):
+        """ Input Function for Planet Level """
+        if pygame.key.get_pressed()[pygame.K_a] != 0:
+            self.rotate_left(self.player)
+        if pygame.key.get_pressed()[pygame.K_d] != 0:
+            self.rotate_right(self.player)
+
+    def update(self):
+        """ Update all entities on the Planet """
+        self.player.update()
+
+    def rotate_right(self, object):
+        """ Rotates an entity right around a given sized circle """
+        object.rect.x = CENTER_X + (object.center_x - (CENTER_X)) * math.cos(self.ANGLE) - (object.center_y - (CENTER_Y)) * math.sin(self.ANGLE)
+        object.rect.y = CENTER_Y + (object.center_x - (CENTER_X)) * math.sin(self.ANGLE) + (object.center_y - (CENTER_Y)) * math.cos(self.ANGLE)
+        self.ANGLE += PLAYER_SPEED
+
+        if self.ANGLE > 360:
+            self.ANGLE = 0
+
+    def rotate_left(self, object):
+        """ Rotates an entity left around a given sized circle """
+        object.rect.x = CENTER_X + (object.center_x - (CENTER_X)) * math.cos(self.ANGLE) - (object.center_y - (CENTER_Y)) * math.sin(self.ANGLE)
+        object.rect.y = CENTER_Y + (object.center_x - (CENTER_X)) * math.sin(self.ANGLE) + (object.center_y - (CENTER_Y)) * math.cos(self.ANGLE)
+        self.ANGLE -= PLAYER_SPEED
+
+        if self.ANGLE < 0:
+            self.ANGLE = 360
+
+    def set_dt(self, dt):
+        print() #Dont do anything
+
+    def render_level(self):
+        """ Draw background and all entities on Planet """
+        self.draw(self.screen)
+        self.screen.blit(self.player.image, self.player.get_pos())
+
+        if pygame.font:
+            font = pygame.font.Font("courbd.ttf", 12)
+
+            cur_x = font.render('X: ' + str(self.player.rect.x), 1, (255, 255, 255))
+            cur_y = font.render('Y: ' + str(self.player.rect.y), 1, (255, 255, 255))
+            cur_a = font.render('A: ' + str(self.ANGLE), 1, (255, 255, 255))
+
+            self.screen.blit(cur_x, (5,880))
+            self.screen.blit(cur_y, (5,865))
+            self.screen.blit(cur_a, (5,850))
+
 
 
 class Universe(Level):
+    "Universe level"
     def __init__(self, screen, spaceship_group, asteroid_group):
         self.asteroid_group = asteroid_group
         self.spaceship_group = spaceship_group
@@ -84,7 +151,7 @@ class Universe(Level):
         self.new_chunk = []
 
     def get_input(self):
-        """ Input Function for both Universe and Planet Levels """
+        """ Input Function for Universe Level """
         if pygame.key.get_pressed()[pygame.K_w] != 0:
             self.spaceship.get_event('accelerate')
         if pygame.key.get_pressed()[pygame.K_a] != 0:
@@ -98,6 +165,7 @@ class Universe(Level):
         random_asteroid = random.randint(0, 5)
         return Asteroid(self.asteroid_group, self.asteroid_image_set[random_asteroid], random.randint(lower_x, upper_x), random.randint(lower_y, upper_y), self.asteroid_damage_set[random_asteroid])
 
+    # TODO: Chunks seem important... lets move to separate module if time permits?
     def generate_chunk(self, chunk_x_coord, chunk_y_coord):
         chunk_already_exists = False
         for chunk in self.current_rendered_chunks:

@@ -1,5 +1,16 @@
 #!/usr/bin/python
 
+#########################################
+# File:         sprite_functions.py
+# Author:       Chris Granat
+# Date:         12/09/16
+# Class:        Open Source
+# Assignment:   Final Project
+# Purpose:      Provides main
+#               functionality
+#               for sprite class
+#########################################
+
 import pygame
 
 RED = (255, 0, 0)
@@ -15,6 +26,7 @@ class Sprite(object):
 
         self.sprite_sheet = pygame.image.load(file_name).convert()
 
+
     def get_image(self, x, y, width, height):
 
         image = pygame.Surface([width, height]).convert()
@@ -24,3 +36,8 @@ class Sprite(object):
         image.set_colorkey(BLACK)
 
         return image
+
+
+    def get_center(self, x, y, width, height):
+
+        return (x - width/2, y - height/2)

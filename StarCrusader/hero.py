@@ -1,8 +1,22 @@
 #!/usr/bin/python
 
-import pygame
+#########################################
+# File:         hero.py
+# Author:       Chris Granat
+# Date:         12/09/16
+# Class:        Open Source
+# Assignment:   Final Project
+# Purpose:      Provides main
+#               functionality
+#               for hero class
+#########################################
 
+import pygame
 from sprite_functions import Sprite
+
+
+STARTING_POS_X = 450
+STARTING_POS_Y = 655
 
 
 class Hero(pygame.sprite.Sprite):
@@ -10,20 +24,26 @@ class Hero(pygame.sprite.Sprite):
     def __init__(self):
 
         super().__init__()
-
+        sprite = Sprite("sprites/Hero.png")
         self.change_x = 0
         self.change_y = 0
+        self.direction = 0
 
-        sprite = Sprite("sprites/Hero.png")
-
-        self.image = sprite.get_image(0,0,48,48)
-
+        self.image = sprite.get_image(0, 0, 48, 48)
+        self.center_x = STARTING_POS_X - self.image.get_size()[0] / 2
+        self.center_y = STARTING_POS_Y - self.image.get_size()[1] / 2
         self.rect = self.image.get_rect()
+        self.rect.x = self.center_x
+        self.rect.y = self.center_y
 
+
+    def get_pos(self):
+        return(self.rect.x,self.rect.y)
 
     def update(self):
 
         self.rect.x += self.change_x
+        self.rect.y += self.change_y
 
 
     def move_left(self):
@@ -39,3 +59,4 @@ class Hero(pygame.sprite.Sprite):
     def stop(self):
 
         self.change_x = 0
+

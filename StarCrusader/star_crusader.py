@@ -1,5 +1,14 @@
 #!/usr/bin/python
 
+#########################################
+# Project:      Star Crusader
+# Author:       Group 6
+# Date:         12/09/16
+# Class:        Open Source
+# Assignment:   Final Project
+# Purpose:      Main game loop
+#########################################
+
 import pygame
 from pygame.locals import *
 import level
@@ -21,53 +30,23 @@ FPS = 60
 MS = 1000
 
 
-class Game:
-    def __init__(self):
-        self.spaceship_group = pygame.sprite.Group()
-        self.asteroid_group = pygame.sprite.Group()
-
-    def get_input(self, level_type, player):
-        """ Input Function for both Universe and Planet Levels """
-        if level_type == "universe":
-            if pygame.key.get_pressed()[pygame.K_w] != 0:
-                player.get_event('accelerate')
-            if pygame.key.get_pressed()[pygame.K_a] != 0:
-                player.get_event('rotate_l')
-            if pygame.key.get_pressed()[pygame.K_d] != 0:
-                player.get_event('rotate_r')
-            if pygame.key.get_pressed()[pygame.K_SPACE] != 0:
-                player.get_event('shoot')
-
-        if level_type == "planet":  # TODO: this is just proof of concept
-            if pygame.key.get_pressed()[pygame.K_a] != 0:
-                player.move_left()
-            if pygame.key.get_pressed()[pygame.K_d] != 0:
-                player.move_right()
 
 def main():
     """ Main Program """
     pygame.init()
 
-    game_state = "universe"
-
     # Screen initialization
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Star Crusader")
 
-    spaceship_group = pygame.sprite.Group()
-    asteroid_group = pygame.sprite.Group()
+    #spaceship_group = pygame.sprite.Group()
+    #asteroid_group = pygame.sprite.Group()
 
     # Set current level (Universe)
-    current_level = level.Universe(screen, spaceship_group, asteroid_group)
-
-    # Create Hero
-    # player = Hero() # for planet
+    #current_level = level.Universe(screen, spaceship_group, asteroid_group)
 
     # Set current level (Planet)
-    # current_level = level.Planet(player) # for planet
-    # player.level = current_level # for planet
-
-    # sprite_list.add(player)
+    current_level = level.Planet(screen)
 
     # Clock manages how fast updates occur
     clock = pygame.time.Clock()
@@ -83,7 +62,8 @@ def main():
 
         # Limit to 60 FPS
         milliseconds = clock.tick(FPS)
-        # For Spaceship (comment out above draw function
+
+        # For Spaceship ... TODO: move this inside ship class or level if possible... low priority though
         dt = milliseconds / MS
         current_level.set_dt(dt)
 
@@ -91,8 +71,8 @@ def main():
         current_level.get_input()
 
         # Update each sprite groups and current level
-        spaceship_group.update()
-        asteroid_group.update(spaceship_group)
+        #spaceship_group.update()                #TODO: move these two functions to current_level.update()?
+        #asteroid_group.update(spaceship_group)  #TODO: move these two functions to current_level.update()?
         current_level.update()
 
         screen.fill(BLACK)
