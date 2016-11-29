@@ -2,6 +2,7 @@
 
 import pygame
 import random
+from spaceship import Spaceship
 
 
 ASTEROID1 = 1
@@ -13,12 +14,13 @@ ASTEROID6 = 6
 
 
 class Asteroid(pygame.sprite.Sprite):
-    def __init__(self, x, y):
-        pygame.sprite.Sprite.__init__(self)
+    def __init__(self, sprite_group, image, x, y, damage):
+        self.group = sprite_group
+        pygame.sprite.Sprite.__init__(self, self.group)
         self.x = x
         self.y = y
 
-        self.image = self.random_asteroid()
+        self.image = image
         self.rect = self.image.get_rect()
         self.position = (self.x, self.y)
         self.rect.center = self.position
@@ -29,24 +31,7 @@ class Asteroid(pygame.sprite.Sprite):
         self.rotation = 0
         self.rot_speed = random.randint(4, 20)
 
-    @staticmethod
-    def random_asteroid():
-        random_asteroid = random.randint(1, 6)
-
-        if ASTEROID1 == random_asteroid:
-            image = pygame.image.load('Sprites/asteroid1.png')
-        if ASTEROID2 == random_asteroid:
-            image = pygame.image.load('Sprites/asteroid2.png')
-        if ASTEROID3 == random_asteroid:
-            image = pygame.image.load('Sprites/asteroid3.png')
-        if ASTEROID4 == random_asteroid:
-            image = pygame.image.load('Sprites/asteroid4.png')
-        if ASTEROID5 == random_asteroid:
-            image = pygame.image.load('Sprites/asteroid5.png')
-        if ASTEROID6 == random_asteroid:
-            image = pygame.image.load('Sprites/asteroid6.png')
-
-        return image
+        self.damage = damage
 
     def set_dt(self, dt):
         self.dt = dt
@@ -55,10 +40,18 @@ class Asteroid(pygame.sprite.Sprite):
         self.image = pygame.transform.rotate(self.orig_img, self.rotation)
         self.rect = self.image.get_rect(center=self.orig_center)
 
-    def update(self):
+    def kill_asteroid(self):
+        self.kill()
+
+    def update(self, spaceship_group):
         if self.rot_speed % 2 == 0:
             self.rotation = (self.rotation + self.rot_speed * self.dt) % 360
         else:
             self.rotation = (self.rotation - self.rot_speed * self.dt) % 360
         self.rect.center = self.image.get_rect().center
         self.rotate_sprite()
+
+        for sprite in spaceship_group:
+            if pygame.sprite.collide_mask(self, sprite):
+                self.kill_asteroid()
+                sprite.collided(self.damage)
