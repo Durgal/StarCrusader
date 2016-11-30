@@ -24,12 +24,13 @@ class Hero(pygame.sprite.Sprite):
     def __init__(self):
 
         super().__init__()
-        sprite = Sprite("Sprites/Hero.png")
+        self.sprite = Sprite("Sprites/Hero_Sheet.png")
         self.change_x = 0
         self.change_y = 0
         self.angle = 0
+        self.direction = "R"
 
-        self.image = sprite.get_image(0, 0, 44, 44)
+        self.image = self.sprite.get_image(0, 0, 44, 44)
         self.center_x = STARTING_POS_X - self.image.get_size()[0] / 2
         self.center_y = STARTING_POS_Y - self.image.get_size()[1] / 2
         self.rect = self.image.get_rect()
@@ -40,6 +41,15 @@ class Hero(pygame.sprite.Sprite):
         return(self.rect.x,self.rect.y)
 
     def update(self):
-
         self.rect.x += self.change_x
         self.rect.y += self.change_y
+
+    def move(self, time, direction):
+        old_direction = self.direction
+
+        if old_direction != direction:
+            self.sprite.flip_image()
+
+        self.image = self.sprite.get_image(0, 0, 44, 44)
+        self.sprite.animate(time)
+        self.direction = direction
