@@ -23,7 +23,7 @@ ACCELERATE = 'accelerate'
 ROTATE_LEFT = 'rotate_l'
 ROTATE_RIGHT = 'rotate_r'
 SHOOT = 'shoot'
-ACCELERATION_RATE = 4
+ACCELERATION_RATE = 8
 ROTATION_RATE = 200
 FUEL_CAPACITY = 100
 FUEL_DEPLETION_RATE = 7
@@ -108,7 +108,7 @@ class Spaceship(pygame.sprite.Sprite):
         if pygame.font:
             font = pygame.font.Font("courbd.ttf", 12)
 
-            rot_angle = font.render(str(self.rotation), 1, (255, 255, 255))
+            rot_angle = font.render(str(int(self.rotation)), 1, (255, 255, 255))
             rot_angle1 = font.render('Angle: ', 1, (255, 255, 255))
             position = font.render(str(self.position), 1, (255, 255, 255))
             position1 = font.render('Position [x,y]: ', 1, (255, 255, 255))
@@ -116,12 +116,11 @@ class Spaceship(pygame.sprite.Sprite):
             velocity1 = font.render('Velocity [x,y]: ', 1, (255, 255, 255))
             frames = font.render(str(int(fps)), 1, (255, 255, 255))
             fuel = font.render('Fuel: ', 1, (255, 255, 255))
-            fuel1 = font.render(str(self.fuel), 1, (255, 255, 255))
+            fuel1 = font.render(str(int(self.fuel)), 1, (255, 255, 255))
             health = font.render('Health: ', 1, (255, 255, 255))
             health1 = font.render(str(self.health), 1, (255, 255, 255))
             energy = font.render('Energy: ', 1, (255, 255, 255))
             energy1 = font.render(str(self.energy), 1, (255, 255, 255))
-            player_chunk = font.render(str(self.player_chunk), 1, (255, 255, 255))
 
             textpos1 = rot_angle.get_rect().move(120, 25)
             textpos2 = position.get_rect().move(120, 40)
@@ -129,36 +128,27 @@ class Spaceship(pygame.sprite.Sprite):
             text_fuel1 = fuel1.get_rect().move(120, 70)
             text_health1 = health1.get_rect().move(120, 85)
             text_energy1 = energy1.get_rect().move(120, 100)
-
             textpos4 = rot_angle1.get_rect().move(10, 25)
             textpos5 = position1.get_rect().move(10, 40)
             textpos6 = velocity1.get_rect().move(10, 55)
             text_fuel = fuel.get_rect().move(10, 70)
             text_health = health.get_rect().move(10, 85)
             text_energy = energy.get_rect().move(10, 100)
-
             textpos7 = frames.get_rect().move(10, 10)
-            player_chunk_text = energy1.get_rect().move(120, 115)
 
             screen.blit(rot_angle, textpos1)
             screen.blit(position, textpos2)
             screen.blit(velocity, textpos3)
-
             screen.blit(rot_angle1, textpos4)
             screen.blit(position1, textpos5)
             screen.blit(velocity1, textpos6)
-
             screen.blit(fuel, text_fuel)
             screen.blit(fuel1, text_fuel1)
-
             screen.blit(health, text_health)
             screen.blit(health1, text_health1)
-
             screen.blit(energy, text_energy)
             screen.blit(energy1, text_energy1)
-
             screen.blit(frames, textpos7)
-            screen.blit(player_chunk, player_chunk_text)
 
     def update(self):
         self.rotation = (self.rotation + self.rot_speed * self.dt) % 360

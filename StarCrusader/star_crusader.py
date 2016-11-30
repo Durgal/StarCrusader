@@ -12,10 +12,6 @@
 import pygame
 from pygame.locals import *
 import level
-from hero import Hero
-from spaceship import Spaceship
-from spaceship import Camera
-from asteroid import Asteroid
 
 
 RED = (255, 0, 0)
@@ -30,7 +26,6 @@ FPS = 60
 MS = 1000
 
 
-
 def main():
     """ Main Program """
     pygame.init()
@@ -39,14 +34,11 @@ def main():
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Star Crusader")
 
-    #spaceship_group = pygame.sprite.Group()
-    #asteroid_group = pygame.sprite.Group()
-
     # Set current level (Universe)
-    #current_level = level.Universe(screen, spaceship_group, asteroid_group)
+    current_level = level.Universe(screen)
 
     # Set current level (Planet)
-    current_level = level.Planet(screen)
+    # current_level = level.Planet(screen)
 
     # Clock manages how fast updates occur
     clock = pygame.time.Clock()
@@ -71,12 +63,10 @@ def main():
         current_level.get_input()
 
         # Update each sprite groups and current level
-        #spaceship_group.update()                #TODO: move these two functions to current_level.update()?
-        #asteroid_group.update(spaceship_group)  #TODO: move these two functions to current_level.update()?
         current_level.update()
 
         screen.fill(BLACK)
-        current_level.render_level()
+        current_level.render_level(clock.get_fps())
 
         # Update screen
         pygame.display.flip()
