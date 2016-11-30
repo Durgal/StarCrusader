@@ -1,37 +1,35 @@
 #!/usr/bin/python
 
 #########################################
-# File:         hero.py
+# File:         item.py
 # Author:       Chris Granat
 # Date:         12/09/16
 # Class:        Open Source
 # Assignment:   Final Project
 # Purpose:      Provides main
 #               functionality
-#               for hero class
+#               for item class
 #########################################
 
 import pygame
 from sprite_functions import Sprite
 
 
-STARTING_POS_X = 450
-STARTING_POS_Y = 655
+class Fuel(pygame.sprite.Sprite):
 
-
-class Hero(pygame.sprite.Sprite):
-
-    def __init__(self):
+    def __init__(self, x, y):
 
         super().__init__()
-        sprite = Sprite("Sprites/Hero.png")
+        sprite = Sprite("Sprites/Fuel.png")
+        self.initial_x = x
+        self.initial_y = y
         self.change_x = 0
         self.change_y = 0
         self.angle = 0
 
         self.image = sprite.get_image(0, 0, 44, 44)
-        self.center_x = STARTING_POS_X - self.image.get_size()[0] / 2
-        self.center_y = STARTING_POS_Y - self.image.get_size()[1] / 2
+        self.center_x = x - self.image.get_size()[0] / 2
+        self.center_y = y - self.image.get_size()[1] / 2
         self.rect = self.image.get_rect()
         self.rect.x = self.center_x
         self.rect.y = self.center_y
@@ -43,3 +41,4 @@ class Hero(pygame.sprite.Sprite):
 
         self.rect.x += self.change_x
         self.rect.y += self.change_y
+
