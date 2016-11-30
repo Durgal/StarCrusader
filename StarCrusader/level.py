@@ -116,7 +116,6 @@ class Planet(Level):
         self.screen.blit(self.player.image, self.player.get_pos())
         self.screen.blit(self.entity_list.image, self.entity_list.get_pos())
 
-
         if pygame.font:
             font = pygame.font.Font("courbd.ttf", 12)
 
@@ -129,12 +128,10 @@ class Planet(Level):
             self.screen.blit(cur_a, (5,850))
 
 
-
 class Universe(Level):
     "Universe level"
-    def __init__(self, screen, spaceship_group, asteroid_group):
-        self.asteroid_group = asteroid_group
-        self.spaceship_group = spaceship_group
+    def __init__(self, screen):
+        self.spaceship_group = pygame.sprite.Group()
         self.camera = Camera(WIDTH, HEIGHT)
         self.spaceship = Spaceship(self.spaceship_group)
         self.screen = screen
@@ -145,7 +142,6 @@ class Universe(Level):
 
         self.player_chunk = self.spaceship.player_chunk
         self.current_rendered_chunks = []
-        self.sprite_chunks = []
         self.player_chunk_coords = [0, 0]
         self.player_coords = [self.spaceship.rect.x, self.spaceship.rect.y]
         self.asteroid_set = []
@@ -162,13 +158,15 @@ class Universe(Level):
         if pygame.key.get_pressed()[pygame.K_SPACE] != 0:
             self.spaceship.get_event('shoot')
 
-    def generate_asteroid(self, lower_x, upper_x, lower_y, upper_y):
+    def generate_asteroid(self, sprite_group, lower_x, upper_x, lower_y, upper_y):
         random_asteroid = random.randint(0, 5)
-        return Asteroid(self.asteroid_group, self.asteroid_image_set[random_asteroid], random.randint(lower_x, upper_x), random.randint(lower_y, upper_y), self.asteroid_damage_set[random_asteroid])
+        return Asteroid(sprite_group, self.asteroid_image_set[random_asteroid], random.randint(lower_x, upper_x), random.randint(lower_y, upper_y), self.asteroid_damage_set[random_asteroid])
 
     # TODO: Chunks seem important... lets move to separate module if time permits?
     def generate_chunk(self, chunk_x_coord, chunk_y_coord):
         chunk_already_exists = False
+        chunk_sprite_group = pygame.sprite.Group()
+
         for chunk in self.current_rendered_chunks:
             if (chunk_x_coord, chunk_y_coord) in chunk:
                 chunk_already_exists = True
@@ -177,21 +175,20 @@ class Universe(Level):
             for sprite in self.new_chunk:
                 self.new_chunk.remove(sprite)
 
-            self.current_rendered_chunks.append(((chunk_x_coord, chunk_y_coord), self.new_chunk))
-            asteroid_count = random.randint(2, 7)
+            asteroid_count = random.randint(10, 10)
 
             for count in range(asteroid_count):
-                self.new_chunk.append(self.generate_asteroid((chunk_x_coord * CHUNK_SIZE), ((chunk_x_coord * CHUNK_SIZE) + CHUNK_SIZE),
+                self.new_chunk.append(self.generate_asteroid(chunk_sprite_group, (chunk_x_coord * CHUNK_SIZE), ((chunk_x_coord * CHUNK_SIZE) + CHUNK_SIZE),
                                            (chunk_y_coord * CHUNK_SIZE), ((chunk_y_coord * CHUNK_SIZE) + CHUNK_SIZE)))
+
+            self.current_rendered_chunks.append(((chunk_x_coord, chunk_y_coord), chunk_sprite_group))
 
     def player_moved_chunks(self):
         player_moved_chunks = False
 
-        if int(self.player_chunk.centerx % CHUNK_HALF_SIZE <= 30) and self.player_coords[X_COORD] not in range(self.player_chunk_coords[X_COORD] * CHUNK_SIZE, (self.player_chunk_coords[X_COORD] * CHUNK_SIZE) + CHUNK_SIZE):
-            player_moved_chunks = True
-
-        if int(self.player_chunk.centery % CHUNK_HALF_SIZE <= 30) and self.player_coords[Y_COORD] not in range(self.player_chunk_coords[Y_COORD] * CHUNK_SIZE, (self.player_chunk_coords[Y_COORD] * CHUNK_SIZE) + CHUNK_SIZE):
-            player_moved_chunks = True
+        if int(self.player_chunk.centerx % CHUNK_HALF_SIZE <= 30) or int(self.player_chunk.centery % CHUNK_HALF_SIZE <= 30):
+            if self.player_coords[X_COORD] not in range(self.player_chunk_coords[X_COORD] * CHUNK_SIZE, (self.player_chunk_coords[X_COORD] * CHUNK_SIZE) + CHUNK_SIZE) or self.player_coords[Y_COORD] not in range(self.player_chunk_coords[Y_COORD] * CHUNK_SIZE, (self.player_chunk_coords[Y_COORD] * CHUNK_SIZE) + CHUNK_SIZE):
+                player_moved_chunks = True
 
         return player_moved_chunks
 
@@ -220,27 +217,30 @@ class Universe(Level):
 
             if not chunk_already_removed:
                 if self.player_chunk_coords[X_COORD] - RENDER_DISTANCE > chunk[COORDS][X_COORD] or self.player_chunk_coords[X_COORD] + RENDER_DISTANCE < chunk[COORDS][X_COORD]:
-                    for asteroid in chunk[ASTEROID_INDEX]:
-                        asteroid.kill_asteroid()
+                    chunk[ASTEROID_INDEX].empty()
                     self.current_rendered_chunks.remove(chunk)
                     chunk_already_removed = True
 
             if not chunk_already_removed:
                 if self.player_chunk_coords[Y_COORD] - RENDER_DISTANCE > chunk[COORDS][Y_COORD] or self.player_chunk_coords[Y_COORD] + RENDER_DISTANCE < chunk[COORDS][Y_COORD]:
-                    for asteroid in chunk[ASTEROID_INDEX]:
-                        asteroid.kill_asteroid()
+                    chunk[ASTEROID_INDEX].empty()
                     self.current_rendered_chunks.remove(chunk)
                     chunk_already_removed = True
 
     def debugging(self):
         if pygame.font:
+            total_sprites = 0
+            for data in self.current_rendered_chunks:
+                for sprite in data[ASTEROID_INDEX]:
+                    total_sprites += 1
+
             font = pygame.font.Font("courbd.ttf", 12)
 
             player_coords1 = font.render(str(self.player_chunk_coords), 1, (255, 255, 255))
             player_coords = font.render('Player chunk coords: ', 1, (255, 255, 255))
             num_chunks1 = font.render(str(len(self.current_rendered_chunks)), 1, (255, 255, 255))
             num_chunks = font.render('Chunks rendered: ', 1, (255, 255, 255))
-            num_sprites1 = font.render(str(len(self.asteroid_group)), 1, (255, 255, 255))
+            num_sprites1 = font.render(str(total_sprites), 1, (255, 255, 255))
             num_sprites = font.render('Sprites rendered: ', 1, (255, 255, 255))
 
             pc1_text = player_coords1.get_rect().move(150, 880)
@@ -258,6 +258,11 @@ class Universe(Level):
             self.screen.blit(num_sprites1, ns1_text)
 
     def update(self):
+        self.spaceship_group.update()
+
+        for data in self.current_rendered_chunks:
+            data[ASTEROID_INDEX].update(self.spaceship_group)
+
         self.update_current_player_coords()
 
         if 0 == len(self.current_rendered_chunks):
@@ -294,16 +299,17 @@ class Universe(Level):
         damage6 = 8
         self.asteroid_damage_set.append(damage6)
 
-    def render_level(self):
+    def render_level(self, fps):
         self.camera.update(self.spaceship)
 
-        for asteroid in self.asteroid_group:
-            self.screen.blit(asteroid.image, self.camera.apply(asteroid))
+        for data in self.current_rendered_chunks:
+            for asteroid in data[ASTEROID_INDEX]:
+                self.screen.blit(asteroid.image, self.camera.apply(asteroid))
 
         for sprite in self.spaceship_group:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
 
-        self.spaceship.debugging(self.screen, 60)
+        self.spaceship.debugging(self.screen, fps)
         self.debugging()
 
     def set_dt(self, dt):
