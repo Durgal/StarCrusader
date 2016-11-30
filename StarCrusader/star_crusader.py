@@ -35,10 +35,10 @@ def main():
     pygame.display.set_caption("Star Crusader")
 
     # Set current level (Universe)
-    current_level = level.Universe(screen)
+    #current_level = level.Universe(screen)
 
     # Set current level (Planet)
-    # current_level = level.Planet(screen)
+    current_level = level.Planet(screen)
 
     # Clock manages how fast updates occur
     clock = pygame.time.Clock()
@@ -55,7 +55,7 @@ def main():
         # Limit to 60 FPS
         milliseconds = clock.tick(FPS)
 
-        # For Spaceship ... TODO: move this inside ship class or level if possible... low priority though
+        # For Spaceship
         dt = milliseconds / MS
         current_level.set_dt(dt)
 

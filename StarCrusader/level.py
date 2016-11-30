@@ -77,6 +77,7 @@ class Planet(Level):
         self.screen = screen
         self.background = pygame.image.load("Sprites/Planet.png").convert()
         self.planet_angle = 0
+        self.time = 0
 
         # test item creation; create fuel
         self.entity_list = Fuel(700, 700)
@@ -85,11 +86,14 @@ class Planet(Level):
         """ Input Function for Planet Level """
         if pygame.key.get_pressed()[pygame.K_a] != 0:
             self.rotate_right(self.entity_list)
+            self.player.move(self.time, "L")
         if pygame.key.get_pressed()[pygame.K_d] != 0:
             self.rotate_left(self.entity_list)
+            self.player.move(self.time, "R")
 
     def update(self):
         """ Update all entities on the Planet -- TODO: collisions etc """
+        self.time += 1
         self.entity_list.update()
         self.player.update()
 
@@ -108,14 +112,15 @@ class Planet(Level):
         self.planet_angle = object.angle
 
     def set_dt(self, dt):
-        pass #Dont do anything
+        pass
 
-    def render_level(self):
+    def render_level(self, fps):
         """ Draw background and all entities on Planet """
         self.draw(self.screen)
         self.screen.blit(self.player.image, self.player.get_pos())
         self.screen.blit(self.entity_list.image, self.entity_list.get_pos())
 
+        """ For Debug """
         if pygame.font:
             font = pygame.font.Font("courbd.ttf", 12)
 
