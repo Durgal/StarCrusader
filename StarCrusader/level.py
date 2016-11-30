@@ -17,6 +17,7 @@ from asteroid import Asteroid
 from spaceship import Spaceship
 from spaceship import Camera
 from hero import Hero
+from item import Fuel
 
 
 # Constants
@@ -47,9 +48,9 @@ Y_COORD = 1
 ASTEROID_INDEX = 1
 
 # Planet
-CENTER_X = 430
+CENTER_X = 432
 CENTER_Y = 1550
-PLAYER_SPEED = .005
+PLAYER_SPEED = .0025
 
 
 class Level:
@@ -58,7 +59,6 @@ class Level:
         self.background = None
         self.type = None
         self.player = player
-        self.ANGLE = 0
 
     def draw(self, screen):
         screen.fill(BLACK)
@@ -70,57 +70,59 @@ class Level:
 
 
 class Planet(Level):
-    """ Generic Planet level """
+    """ Generate Planet level """
     def __init__(self, screen):
         player = Hero()
         Level.__init__(self, player)
         self.screen = screen
-        self.type = "planet"
-        self.background = pygame.image.load("sprites/planet.png").convert()
+        self.background = pygame.image.load("Sprites/Planet.png").convert()
+        self.planet_angle = 0
+
+        # test item creation; create fuel
+        self.entity_list = Fuel(700, 700)
 
     def get_input(self):
         """ Input Function for Planet Level """
         if pygame.key.get_pressed()[pygame.K_a] != 0:
-            self.rotate_left(self.player)
+            self.rotate_right(self.entity_list)
         if pygame.key.get_pressed()[pygame.K_d] != 0:
-            self.rotate_right(self.player)
+            self.rotate_left(self.entity_list)
 
     def update(self):
-        """ Update all entities on the Planet """
+        """ Update all entities on the Planet -- TODO: collisions etc """
+        self.entity_list.update()
         self.player.update()
 
     def rotate_right(self, object):
         """ Rotates an entity right around a given sized circle """
-        object.rect.x = CENTER_X + (object.center_x - (CENTER_X)) * math.cos(self.ANGLE) - (object.center_y - (CENTER_Y)) * math.sin(self.ANGLE)
-        object.rect.y = CENTER_Y + (object.center_x - (CENTER_X)) * math.sin(self.ANGLE) + (object.center_y - (CENTER_Y)) * math.cos(self.ANGLE)
-        self.ANGLE += PLAYER_SPEED
-
-        if self.ANGLE > 360:
-            self.ANGLE = 0
+        object.rect.x = CENTER_X + (object.center_x - (CENTER_X)) * math.cos(object.angle) - (object.center_y - (CENTER_Y)) * math.sin(object.angle)
+        object.rect.y = CENTER_Y + (object.center_x - (CENTER_X)) * math.sin(object.angle) + (object.center_y - (CENTER_Y)) * math.cos(object.angle)
+        object.angle += PLAYER_SPEED
+        self.planet_angle = object.angle
 
     def rotate_left(self, object):
         """ Rotates an entity left around a given sized circle """
-        object.rect.x = CENTER_X + (object.center_x - (CENTER_X)) * math.cos(self.ANGLE) - (object.center_y - (CENTER_Y)) * math.sin(self.ANGLE)
-        object.rect.y = CENTER_Y + (object.center_x - (CENTER_X)) * math.sin(self.ANGLE) + (object.center_y - (CENTER_Y)) * math.cos(self.ANGLE)
-        self.ANGLE -= PLAYER_SPEED
-
-        if self.ANGLE < 0:
-            self.ANGLE = 360
+        object.rect.x = CENTER_X + (object.center_x - (CENTER_X)) * math.cos(object.angle) - (object.center_y - (CENTER_Y)) * math.sin(object.angle)
+        object.rect.y = CENTER_Y + (object.center_x - (CENTER_X)) * math.sin(object.angle) + (object.center_y - (CENTER_Y)) * math.cos(object.angle)
+        object.angle -= PLAYER_SPEED
+        self.planet_angle = object.angle
 
     def set_dt(self, dt):
-        print() #Dont do anything
+        pass #Dont do anything
 
     def render_level(self):
         """ Draw background and all entities on Planet """
         self.draw(self.screen)
         self.screen.blit(self.player.image, self.player.get_pos())
+        self.screen.blit(self.entity_list.image, self.entity_list.get_pos())
+
 
         if pygame.font:
             font = pygame.font.Font("courbd.ttf", 12)
 
-            cur_x = font.render('X: ' + str(self.player.rect.x), 1, (255, 255, 255))
-            cur_y = font.render('Y: ' + str(self.player.rect.y), 1, (255, 255, 255))
-            cur_a = font.render('A: ' + str(self.ANGLE), 1, (255, 255, 255))
+            cur_x = font.render('X: ' + str(self.entity_list.rect.x), 1, (255, 255, 255))
+            cur_y = font.render('Y: ' + str(self.entity_list.rect.y), 1, (255, 255, 255))
+            cur_a = font.render('A: ' + str(self.entity_list.angle), 1, (255, 255, 255))
 
             self.screen.blit(cur_x, (5,880))
             self.screen.blit(cur_y, (5,865))
@@ -137,7 +139,6 @@ class Universe(Level):
         self.spaceship = Spaceship(self.spaceship_group)
         self.screen = screen
         Level.__init__(self, self.spaceship)
-        self.type = "universe"
         self.asteroid_image_set = []
         self.asteroid_damage_set = []
         self.load_asteroid_data()
