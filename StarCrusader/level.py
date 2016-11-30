@@ -114,7 +114,7 @@ class Planet(Level):
     def set_dt(self, dt):
         pass
 
-    def render_level(self):
+    def render_level(self, fps):
         """ Draw background and all entities on Planet """
         self.draw(self.screen)
         self.screen.blit(self.player.image, self.player.get_pos())
