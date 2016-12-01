@@ -19,7 +19,7 @@ BLUE = (0, 0, 255)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
-dFPS = 10
+mFPS = 10
 
 
 class Sprite(object):
@@ -39,7 +39,7 @@ class Sprite(object):
         self.sprite_sheet = pygame.transform.flip(self.sprite_sheet, True, False)
 
     def animate(self, time):
-        if time % dFPS == 0:
+        if time % mFPS == 0:
             if self.current_sprite >= self.number_sprite - 1:
                 self.current_sprite = 0
             else:

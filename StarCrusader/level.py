@@ -17,6 +17,7 @@ from asteroid import Asteroid
 from spaceship import Spaceship
 from spaceship import Camera
 from hero import Hero
+from pirate import Pirate
 from item import Fuel
 
 
@@ -87,12 +88,19 @@ class Planet(Level):
         if pygame.key.get_pressed()[pygame.K_a] != 0:
             self.rotate_right(self.entity_list)
             self.player.move(self.time, "L")
-        if pygame.key.get_pressed()[pygame.K_d] != 0:
+        elif pygame.key.get_pressed()[pygame.K_d] != 0:
             self.rotate_left(self.entity_list)
             self.player.move(self.time, "R")
+        elif pygame.key.get_pressed()[pygame.K_a] == 0:
+            self.player.stop()
+        elif pygame.key.get_pressed()[pygame.K_d] == 0:
+            self.player.stop()
+
+        if pygame.key.get_pressed()[pygame.K_w] != 0 and self.player.center_y:
+            self.player.jump()
 
     def update(self):
-        """ Update all entities on the Planet -- TODO: collisions etc """
+        """ Update all entities on the Planet -- TODO: collisions, gravity etc """
         self.time += 1
         self.entity_list.update()
         self.player.update()
