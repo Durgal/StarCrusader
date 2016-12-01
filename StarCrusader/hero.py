@@ -55,8 +55,11 @@ class Hero(pygame.sprite.Sprite):
     def jump(self):
         self.velocity = 0
 
-    def stop(self):
-        self.image = self.sprite_stopped.get_image(0, 0, 44, 44)
+    def stop(self ,time):
+        if self.sprite.current_sprite != 0:
+            self.sprite.animate(time)
+        else:
+            self.image = self.sprite_stopped.get_image(0, 0, 44, 44)
 
     def update(self):
         if self.velocity < 0:
