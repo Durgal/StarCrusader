@@ -55,7 +55,8 @@ class Hero(pygame.sprite.Sprite):
         self.direction = direction
 
     def jump(self):
-        self.velocity = 6
+        if self.on_ground == True:
+            self.velocity = 6
 
     def stop(self ,time):
         if self.sprite.current_sprite != 0:
@@ -72,12 +73,14 @@ class Hero(pygame.sprite.Sprite):
         if collision == False:
             self.on_ground = False
 
+        # if player touches ground stop
         if collision == True:
             if self.falling == True:
                 self.falling = False
                 self.on_ground = True
                 self.velocity = 0
 
+        # fall if on ground, else snap to position
         if self.on_ground == False:
             self.velocity += self.gravity
         else:

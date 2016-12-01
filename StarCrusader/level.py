@@ -134,13 +134,15 @@ class Planet(Level):
         if pygame.font:
             font = pygame.font.Font("courbd.ttf", 12)
 
-            cur_x = font.render('D: ' + str(self.player.direction), 1, (255, 255, 255))
-            cur_y = font.render('V: ' + str(self.player.velocity), 1, (255, 255, 255))
-            cur_a = font.render('G: ' + str(self.player.on_ground), 1, (255, 255, 255))
+            cur_f = font.render('F: ' + str(self.player.falling), 1, (255, 255, 255))
+            cur_g = font.render('G: ' + str(self.player.on_ground), 1, (255, 255, 255))
+            cur_d = font.render('D: ' + str(self.player.direction), 1, (255, 255, 255))
+            cur_v = font.render('V: ' + str(self.player.velocity), 1, (255, 255, 255))
 
-            self.screen.blit(cur_x, (5,880))
-            self.screen.blit(cur_y, (5,865))
-            self.screen.blit(cur_a, (5,850))
+            self.screen.blit(cur_f, (5, 835))
+            self.screen.blit(cur_g, (5, 850))
+            self.screen.blit(cur_d, (5, 865))
+            self.screen.blit(cur_v, (5,880))
 
 
 class Universe(Level):
