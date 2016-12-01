@@ -24,15 +24,16 @@ class Hero(pygame.sprite.Sprite):
     def __init__(self):
 
         super().__init__()
-        self.sprite = Sprite("Sprites/Hero_Sheet.png")
-        self.sprite_stopped = Sprite("Sprites/Hero.png")
+        self.sprite = Sprite("Sprites/Hero_Sheet.png", 44, 44)
+        self.sprite_stopped = Sprite("Sprites/Hero.png", 44, 44)
         self.angle = 0
         self.velocity = 0
-        self.gravity = 0
+        self.gravity = -.5
+        self.collision = False
         self.on_ground = True
         self.direction = "R"
 
-        self.image = self.sprite.get_image(0, 0, 44, 44)
+        self.image = self.sprite.get_image(0, 0)
         self.center_x = STARTING_POS_X - self.image.get_size()[0] / 2
         self.center_y = STARTING_POS_Y - self.image.get_size()[1] / 2
         self.rect = self.image.get_rect()
@@ -48,24 +49,24 @@ class Hero(pygame.sprite.Sprite):
         if old_direction != direction:
             self.sprite.flip_image()
 
-        self.image = self.sprite.get_image(0, 0, 44, 44)
+        self.image = self.sprite.get_image(0, 0)
         self.sprite.animate(time)
         self.direction = direction
 
     def jump(self):
-        self.velocity = 0
+        self.velocity = 6
 
     def stop(self ,time):
         if self.sprite.current_sprite != 0:
             self.sprite.animate(time)
         else:
-            self.image = self.sprite_stopped.get_image(0, 0, 44, 44)
+            self.image = self.sprite_stopped.get_image(0, 0)
 
-    def update(self):
-        if self.velocity < 0:
-            self.falling = True
+    def update(self, object):
 
+        if self.on_ground == False:
+            self.velocity += self.gravity
 
+        self.collision = self.sprite.get_collision(self.rect.x, self.rect.y, self.sprite.width, self.sprite.height, object.rect.x, object.rect.y, object.sprite.width, object.sprite.height)
 
-        self.velocity += self.gravity
         self.rect.y -= self.velocity

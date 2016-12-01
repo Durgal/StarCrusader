@@ -92,9 +92,9 @@ class Planet(Level):
             self.rotate_left(self.entity_list)
             self.player.move(self.time, "R")
         elif pygame.key.get_pressed()[pygame.K_a] == 0:
-            self.player.stop()
+            self.player.stop(self.time)
         elif pygame.key.get_pressed()[pygame.K_d] == 0:
-            self.player.stop()
+            self.player.stop(self.time)
 
         if pygame.key.get_pressed()[pygame.K_w] != 0 and self.player.center_y:
             self.player.jump()
@@ -103,7 +103,7 @@ class Planet(Level):
         """ Update all entities on the Planet -- TODO: collisions, gravity etc """
         self.time += 1
         self.entity_list.update()
-        self.player.update()
+        self.player.update(self.entity_list)
 
     def rotate_right(self, object):
         """ Rotates an entity right around a given sized circle """

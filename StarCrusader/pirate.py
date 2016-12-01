@@ -24,7 +24,7 @@ class Pirate(pygame.sprite.Sprite):
     def __init__(self, x, y):
 
         super().__init__()
-        self.sprite = Sprite("Sprites/Pirate_Sheet.png")
+        self.sprite = Sprite("Sprites/Pirate_Sheet.png", 44, 44)
         self.initial_x = x
         self.initial_y = y
         self.change_x = 0
@@ -33,7 +33,7 @@ class Pirate(pygame.sprite.Sprite):
         self.direction = "R"
         self.speed = 1
 
-        self.image = self.sprite.get_image(0, 0, 44, 44)
+        self.image = self.sprite.get_image(0, 0)
         self.center_x = x - self.image.get_size()[0] / 2
         self.center_y = y - self.image.get_size()[1] / 2
         self.rect = self.image.get_rect()
@@ -53,6 +53,6 @@ class Pirate(pygame.sprite.Sprite):
         if old_direction != direction:
             self.sprite.flip_image()
 
-        self.image = self.sprite.get_image(0, 0, 44, 44)
+        self.image = self.sprite.get_image(0, 0)
         self.sprite.animate(time)
         self.direction = direction
