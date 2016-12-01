@@ -19,6 +19,7 @@ from spaceship import Camera
 from hero import Hero
 from pirate import Pirate
 from item import Fuel
+from ground import Ground
 
 
 # Constants
@@ -82,6 +83,7 @@ class Planet(Level):
 
         # test item creation; create fuel
         self.entity_list = Fuel(700, 700)
+        self.ground = Ground(450,698)
 
     def get_input(self):
         """ Input Function for Planet Level """
@@ -103,7 +105,7 @@ class Planet(Level):
         """ Update all entities on the Planet -- TODO: collisions, gravity etc """
         self.time += 1
         self.entity_list.update()
-        self.player.update(self.entity_list)
+        self.player.update(self.entity_list, self.ground)
 
     def rotate_right(self, object):
         """ Rotates an entity right around a given sized circle """
@@ -132,9 +134,9 @@ class Planet(Level):
         if pygame.font:
             font = pygame.font.Font("courbd.ttf", 12)
 
-            cur_x = font.render('X: ' + str(self.entity_list.rect.x), 1, (255, 255, 255))
-            cur_y = font.render('Y: ' + str(self.entity_list.rect.y), 1, (255, 255, 255))
-            cur_a = font.render('A: ' + str(self.entity_list.angle), 1, (255, 255, 255))
+            cur_x = font.render('D: ' + str(self.player.direction), 1, (255, 255, 255))
+            cur_y = font.render('V: ' + str(self.player.velocity), 1, (255, 255, 255))
+            cur_a = font.render('G: ' + str(self.player.on_ground), 1, (255, 255, 255))
 
             self.screen.blit(cur_x, (5,880))
             self.screen.blit(cur_y, (5,865))

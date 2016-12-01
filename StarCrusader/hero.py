@@ -30,7 +30,8 @@ class Hero(pygame.sprite.Sprite):
         self.velocity = 0
         self.gravity = -.5
         self.collision = False
-        self.on_ground = True
+        self.on_ground = False
+        self.falling = False
         self.direction = "R"
 
         self.image = self.sprite.get_image(0, 0)
@@ -62,11 +63,26 @@ class Hero(pygame.sprite.Sprite):
         else:
             self.image = self.sprite_stopped.get_image(0, 0)
 
-    def update(self, object):
+    def update(self, object, ground):
+        if self.velocity < 0:
+            self.falling = True
+
+        collision = self.collision = self.sprite.get_collision(self.rect.x, self.rect.y, self.sprite.width, self.sprite.height, ground.rect.x, ground.rect.y, ground.sprite.width, ground.sprite.height)
+
+        if collision == False:
+            self.on_ground = False
+
+        if collision == True:
+            if self.falling == True:
+                self.falling = False
+                self.on_ground = True
+                self.velocity = 0
 
         if self.on_ground == False:
             self.velocity += self.gravity
-
-        self.collision = self.sprite.get_collision(self.rect.x, self.rect.y, self.sprite.width, self.sprite.height, object.rect.x, object.rect.y, object.sprite.width, object.sprite.height)
+        else:
+            self.rect.y = self.center_y
 
         self.rect.y -= self.velocity
+
+
