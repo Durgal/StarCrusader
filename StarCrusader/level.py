@@ -152,8 +152,9 @@ class Universe(Level):
     "Universe level"
     def __init__(self, screen):
         self.spaceship_group = pygame.sprite.Group()
+        self.laser_group = pygame.sprite.Group()
         self.camera = Camera(WIDTH, HEIGHT)
-        self.spaceship = Spaceship(self.spaceship_group)
+        self.spaceship = Spaceship(self.spaceship_group, self.laser_group)
         self.screen = screen
         Level.__init__(self, self.spaceship)
         self.asteroid_image_set = []
@@ -176,7 +177,7 @@ class Universe(Level):
         if pygame.key.get_pressed()[pygame.K_d] != 0:
             self.spaceship.get_event('rotate_r')
         if pygame.key.get_pressed()[pygame.K_SPACE] != 0:
-            self.spaceship.get_event('shoot')
+            self.spaceship.shoot_laser()
 
     def generate_asteroid(self, sprite_group, lower_x, upper_x, lower_y, upper_y):
         random_asteroid = random.randint(0, 5)
@@ -195,7 +196,7 @@ class Universe(Level):
             for sprite in self.new_chunk:
                 self.new_chunk.remove(sprite)
 
-            asteroid_count = random.randint(10, 10)
+            asteroid_count = random.randint(2, 10)
 
             for count in range(asteroid_count):
                 self.new_chunk.append(self.generate_asteroid(chunk_sprite_group, (chunk_x_coord * CHUNK_SIZE), ((chunk_x_coord * CHUNK_SIZE) + CHUNK_SIZE),
@@ -279,9 +280,10 @@ class Universe(Level):
 
     def update(self):
         self.spaceship_group.update()
+        self.laser_group.update()
 
         for data in self.current_rendered_chunks:
-            data[ASTEROID_INDEX].update(self.spaceship_group)
+            data[ASTEROID_INDEX].update(self.spaceship_group, self.laser_group)
 
         self.update_current_player_coords()
 
@@ -325,6 +327,9 @@ class Universe(Level):
         for data in self.current_rendered_chunks:
             for asteroid in data[ASTEROID_INDEX]:
                 self.screen.blit(asteroid.image, self.camera.apply(asteroid))
+
+        for laser in self.spaceship.laser_group:
+            self.screen.blit(laser.image, self.camera.apply(laser))
 
         for sprite in self.spaceship_group:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
