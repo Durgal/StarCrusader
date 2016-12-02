@@ -94,7 +94,7 @@ class Hero(pygame.sprite.Sprite):
                 self.on_ground = True
                 self.velocity = 0
 
-        # fall if on ground, else snap to position
+        # fall if not on ground, else snap to position
         if self.on_ground == False:
             self.velocity += self.gravity
         else:

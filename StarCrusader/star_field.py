@@ -10,7 +10,6 @@
 #               field for planet background
 #########################################
 
-import pygame
 from random import randrange, choice
 
 

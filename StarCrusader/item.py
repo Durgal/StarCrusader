@@ -21,11 +21,10 @@ class Fuel(pygame.sprite.Sprite):
     def __init__(self, x, y):
 
         super().__init__()
-        self.sprite = Sprite("Sprites/Fuel.png", 36, 36)
+        self.sprite = Sprite("Sprites/Item_Fuel.png", 36, 36)
         self.initial_x = x
         self.initial_y = y
-        self.change_x = 0
-        self.change_y = 0
+        self.speed = 0
         self.angle = 0
 
         self.image = self.sprite.get_image(0, 0)
@@ -37,9 +36,4 @@ class Fuel(pygame.sprite.Sprite):
 
     def get_pos(self):
         return(self.rect.x,self.rect.y)
-
-    def update(self):
-
-        self.rect.x += self.change_x
-        self.rect.y += self.change_y
 
