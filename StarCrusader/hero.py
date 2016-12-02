@@ -12,11 +12,15 @@
 #########################################
 
 import pygame
-from sprite_functions import Sprite
 
+from Utilities.sprite_functions import Sprite
+from Utilities.audio_functions import Audio
 
 STARTING_POS_X = 450
 STARTING_POS_Y = 655
+
+#Audio
+snd_jump = "Audio/jump.wav"
 
 
 class Hero(pygame.sprite.Sprite):
@@ -42,6 +46,8 @@ class Hero(pygame.sprite.Sprite):
         self.rect.x = self.center_x
         self.rect.y = self.center_y
 
+        self.snd_jump = Audio(snd_jump)
+
     def get_pos(self):
         return(self.rect.x,self.rect.y)
 
@@ -62,6 +68,7 @@ class Hero(pygame.sprite.Sprite):
 
     def jump(self):
         if self.on_ground == True:
+            self.snd_jump.play()
             self.velocity = 6
 
     def stop(self ,time):

@@ -12,7 +12,8 @@
 #########################################
 
 import pygame
-from sprite_functions import Sprite
+
+from Utilities.sprite_functions import Sprite
 
 
 class Fuel(pygame.sprite.Sprite):

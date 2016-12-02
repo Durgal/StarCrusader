@@ -12,8 +12,8 @@
 #########################################
 
 import pygame
-from sprite_functions import Sprite
 
+from Utilities.sprite_functions import Sprite
 
 STARTING_POS_X = 450
 STARTING_POS_Y = 655

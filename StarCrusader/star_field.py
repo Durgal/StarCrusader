@@ -41,7 +41,7 @@ class Star():
                 star[1] = randrange(0,screen.get_width())
                 star[2] = choice([1,2,3])
 
-            # Speed correlates to brightness
+            # Brightness of star depends on speed
             if star[2] == 1:
                 color = (100,100,100)
             elif star[2] == 2:
@@ -49,4 +49,5 @@ class Star():
             elif star[2] == 3:
                 color = (255, 255, 255)
 
+            # Draw star with color at (x, y, w, h)
             screen.fill(color, (star[0], star[1], star[2], star[2]))
