@@ -17,7 +17,9 @@ from asteroid import Asteroid
 from spaceship import Spaceship
 from spaceship import Camera
 from hero import Hero
+from pirate import Pirate
 from item import Fuel
+from ground import Ground
 
 
 # Constants
@@ -81,21 +83,29 @@ class Planet(Level):
 
         # test item creation; create fuel
         self.entity_list = Fuel(700, 700)
+        self.ground = Ground(450,698)
 
     def get_input(self):
         """ Input Function for Planet Level """
         if pygame.key.get_pressed()[pygame.K_a] != 0:
             self.rotate_right(self.entity_list)
             self.player.move(self.time, "L")
-        if pygame.key.get_pressed()[pygame.K_d] != 0:
+        elif pygame.key.get_pressed()[pygame.K_d] != 0:
             self.rotate_left(self.entity_list)
             self.player.move(self.time, "R")
+        elif pygame.key.get_pressed()[pygame.K_a] == 0:
+            self.player.stop(self.time)
+        elif pygame.key.get_pressed()[pygame.K_d] == 0:
+            self.player.stop(self.time)
+
+        if pygame.key.get_pressed()[pygame.K_w] != 0 and self.player.center_y:
+            self.player.jump()
 
     def update(self):
-        """ Update all entities on the Planet -- TODO: collisions etc """
+        """ Update all entities on the Planet -- TODO: collisions, gravity etc """
         self.time += 1
         self.entity_list.update()
-        self.player.update()
+        self.player.update(self.entity_list, self.ground)
 
     def rotate_right(self, object):
         """ Rotates an entity right around a given sized circle """
@@ -124,13 +134,15 @@ class Planet(Level):
         if pygame.font:
             font = pygame.font.Font("courbd.ttf", 12)
 
-            cur_x = font.render('X: ' + str(self.entity_list.rect.x), 1, (255, 255, 255))
-            cur_y = font.render('Y: ' + str(self.entity_list.rect.y), 1, (255, 255, 255))
-            cur_a = font.render('A: ' + str(self.entity_list.angle), 1, (255, 255, 255))
+            cur_f = font.render('F: ' + str(self.player.falling), 1, (255, 255, 255))
+            cur_g = font.render('G: ' + str(self.player.on_ground), 1, (255, 255, 255))
+            cur_d = font.render('D: ' + str(self.player.direction), 1, (255, 255, 255))
+            cur_v = font.render('V: ' + str(self.player.velocity), 1, (255, 255, 255))
 
-            self.screen.blit(cur_x, (5,880))
-            self.screen.blit(cur_y, (5,865))
-            self.screen.blit(cur_a, (5,850))
+            self.screen.blit(cur_f, (5, 835))
+            self.screen.blit(cur_g, (5, 850))
+            self.screen.blit(cur_d, (5, 865))
+            self.screen.blit(cur_v, (5,880))
 
 
 class Universe(Level):

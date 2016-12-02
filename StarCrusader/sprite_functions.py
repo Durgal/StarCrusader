@@ -19,19 +19,21 @@ BLUE = (0, 0, 255)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
-dFPS = 10
+mFPS = 10
 
 
 class Sprite(object):
 
-    def __init__(self,file_name):
+    def __init__(self,file_name, w, h):
         self.sprite_sheet = pygame.image.load(file_name).convert()
         self.current_sprite = 0
         self.number_sprite = 4
+        self.width = w
+        self.height = h
 
-    def get_image(self, x, y, width, height):
-        image = pygame.Surface([width, height]).convert()
-        image.blit(self.sprite_sheet, (x, y), (self.current_sprite*width, 0, width, height))
+    def get_image(self, x, y):
+        image = pygame.Surface([self.width, self.height]).convert()
+        image.blit(self.sprite_sheet, (x, y), (self.current_sprite*self.width, 0, self.width, self.height))
         image.set_colorkey(BLACK)
         return image
 
@@ -39,7 +41,7 @@ class Sprite(object):
         self.sprite_sheet = pygame.transform.flip(self.sprite_sheet, True, False)
 
     def animate(self, time):
-        if time % dFPS == 0:
+        if time % mFPS == 0:
             if self.current_sprite >= self.number_sprite - 1:
                 self.current_sprite = 0
             else:
@@ -50,3 +52,15 @@ class Sprite(object):
 
     def set_sprite(self, num):
         self.current_sprite = num
+
+    def get_collision(self, x1, y1, w1, h1, x2, y2, w2, h2):
+        if (x2 + w2 >= x1 >= x2 and y2 + h2 >= y1 >= y2):
+            return True
+        elif (x2 + w2 >= x1 + w1 >= x2 and y2 + h2 >= y1 >= y2):
+            return True
+        elif (x2 + w2 >= x1 >= x2 and y2 + h2 >= y1 + h1 >= y2):
+            return True
+        elif (x2 + w2 >= x1 + w1 >= x2 and y2 + h2 >= y1 + h1 >= y2):
+            return True
+        else:
+            return False
