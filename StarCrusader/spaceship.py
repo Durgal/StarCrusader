@@ -14,6 +14,7 @@
 import pygame
 vec = pygame.math.Vector2
 
+HALF = 2
 STARTING_POS_X = 450
 STARTING_POS_Y = 450
 POSITION_X = 0
@@ -22,19 +23,21 @@ WIDTH, HEIGHT = 900, 900
 ACCELERATE = 'accelerate'
 ROTATE_LEFT = 'rotate_l'
 ROTATE_RIGHT = 'rotate_r'
-SHOOT = 'shoot'
 ACCELERATION_RATE = 8
 ROTATION_RATE = 200
-FUEL_CAPACITY = 100
 FUEL_DEPLETION_RATE = 7
-HEALTH_CAPACITY = 1000000
-ENERGY_CAPACITY = 100
+FUEL_CAPACITY = 100
 ENERGY_DEPLETION_RATE = 10
+ENERGY_CAPACITY = 100
 FIRE_RATE = 200
+HEALTH_CAPACITY = 100
 LASER_SPEED = vec(0, -15)
 LASER_ROT_OFFSET = 90
 LASER_DURATION = 500
 LASER_OFFSET = vec(0, -20)
+MIN = 0
+INITIALIZE = 0
+FULL_ROTATION = 360
 
 
 class Spaceship(pygame.sprite.Sprite):
@@ -45,29 +48,31 @@ class Spaceship(pygame.sprite.Sprite):
         self.image = pygame.image.load('Sprites/spaceship.png')
         self.rect = self.image.get_rect()
         self.position = vec(x, y)
-        self.velocity = vec(0, 0)
-        self.acceleration = vec(0, 0)
+        self.velocity = vec(INITIALIZE, INITIALIZE)
+        self.acceleration = vec(INITIALIZE, INITIALIZE)
         self.rect.center = self.position
-        self.rotation = 0
-        self.rot_speed = 0
-        self.dt = 0
+        self.rotation = INITIALIZE
+        self.rot_speed = INITIALIZE
+        self.dt = INITIALIZE
+        self.dead = False
+        self.last_shot = INITIALIZE
+
         self.fuel = FUEL_CAPACITY
         self.health = HEALTH_CAPACITY
         self.energy = ENERGY_CAPACITY
-        self.dead = False
-        self.last_shot = 0
+        self.treasure = INITIALIZE
 
         self.orig_img = self.image
         self.orig_center = self.rect.center
 
-        self.player_chunk = pygame.Rect(0, 0, WIDTH, HEIGHT)
+        self.player_chunk = pygame.Rect(INITIALIZE, INITIALIZE, WIDTH, HEIGHT)
         self.player_chunk.center = self.position
 
     def get_event(self, event):
-        self.rot_speed = 0
-        if 0 <= self.fuel or self.dead:
+        self.rot_speed = INITIALIZE
+        if MIN <= self.fuel or self.dead:
             if ACCELERATE == event:
-                self.acceleration = vec(0, -ACCELERATION_RATE)
+                self.acceleration = vec(MIN, -ACCELERATION_RATE)
                 self.deplete_fuel()
             if ROTATE_LEFT == event:
                 self.rot_speed = ROTATION_RATE
@@ -77,7 +82,7 @@ class Spaceship(pygame.sprite.Sprite):
                 self.rotate_sprite()
 
     def shoot_laser(self):
-        if 0 < self.energy:
+        if MIN < self.energy:
             now = pygame.time.get_ticks()
             if now - self.last_shot > FIRE_RATE:
                 self.last_shot = now
@@ -94,12 +99,12 @@ class Spaceship(pygame.sprite.Sprite):
         self.health -= amount
 
     def check_death(self):
-        if 0 >= self.health:
+        if MIN >= self.health:
             self.kill()
             self.dead = True
 
         if self.dead:
-            self.velocity = vec(0, 0)
+            self.velocity = vec(INITIALIZE, INITIALIZE)
 
     def set_dt(self, dt):
         self.dt = dt
@@ -155,12 +160,12 @@ class Spaceship(pygame.sprite.Sprite):
             screen.blit(frames, textpos7)
 
     def update(self):
-        self.rotation = (self.rotation + self.rot_speed * self.dt) % 360
+        self.rotation = (self.rotation + self.rot_speed * self.dt) % FULL_ROTATION
         self.velocity += self.acceleration.rotate(-self.rotation) * self.dt
         self.position += self.velocity
-        self.acceleration = vec(0, 0)
+        self.acceleration = vec(INITIALIZE, INITIALIZE)
         self.rect.center = self.position
-        self.rot_speed = 0
+        self.rot_speed = INITIALIZE
 
         self.check_death()
         self.player_chunk.centerx = self.position[POSITION_X]
@@ -201,7 +206,7 @@ class Laser(pygame.sprite.Sprite):
 
 class Camera:
     def __init__(self, width, height):
-        self.camera = pygame.Rect(0, 0, width, height)
+        self.camera = pygame.Rect(INITIALIZE, INITIALIZE, width, height)
         self.width = width
         self.height = height
 
@@ -209,6 +214,6 @@ class Camera:
         return entity.rect.move(self.camera.topleft)
 
     def update(self, target):
-        x = -target.rect.centerx + int(self.width / 2)
-        y = -target.rect.centery + int(self.height / 2)
+        x = -target.rect.centerx + int(self.width / HALF)
+        y = -target.rect.centery + int(self.height / HALF)
         self.camera = pygame.Rect(x, y, self.width, self.height)
