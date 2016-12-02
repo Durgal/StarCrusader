@@ -143,7 +143,7 @@ class Spaceship(pygame.sprite.Sprite):
             text_fuel = fuel.get_rect().move(10, 70)
             text_health = health.get_rect().move(10, 85)
             text_energy = energy.get_rect().move(10, 100)
-            textpos7 = frames.get_rect().move(10, 10)
+            textpos7 = frames.get_rect().move(10, 1)
 
             screen.blit(rot_angle, textpos1)
             screen.blit(position, textpos2)
