@@ -13,6 +13,7 @@
 import pygame
 import random
 import math
+from hud import Hud
 from asteroid import Asteroid
 from spaceship import Spaceship
 from spaceship import Camera
@@ -63,6 +64,7 @@ class Level:
         self.background = None
         self.type = None
         self.player = player
+        self.hud = Hud()
 
     def draw(self, screen):
         #screen.fill(BLACK)
@@ -290,6 +292,7 @@ class Universe(Level):
     def update(self):
         self.spaceship_group.update()
         self.laser_group.update()
+        self.hud.update(self.spaceship.fuel, self.spaceship.health, self.spaceship.energy, self.spaceship.treasure)
 
         for data in self.current_rendered_chunks:
             data[ASTEROID_INDEX].update(self.spaceship_group, self.laser_group)
@@ -297,6 +300,7 @@ class Universe(Level):
         self.update_current_player_coords()
 
         if 0 == len(self.current_rendered_chunks):
+            self.update_current_chunk_coords()
             self.generate_nearby_chunks()
 
         if self.player_moved_chunks():
@@ -307,27 +311,27 @@ class Universe(Level):
     def load_asteroid_data(self):
         image1 = pygame.image.load('Sprites/asteroid1.png')
         self.asteroid_image_set.append(image1)
-        damage1 = 47
+        damage1 = 15
         self.asteroid_damage_set.append(damage1)
         image2 = pygame.image.load('Sprites/asteroid2.png')
         self.asteroid_image_set.append(image2)
-        damage2 = 74
+        damage2 = 25
         self.asteroid_damage_set.append(damage2)
         image3 = pygame.image.load('Sprites/asteroid3.png')
         self.asteroid_image_set.append(image3)
-        damage3 = 63
+        damage3 = 21
         self.asteroid_damage_set.append(damage3)
         image4 = pygame.image.load('Sprites/asteroid4.png')
         self.asteroid_image_set.append(image4)
-        damage4 = 18
+        damage4 = 8
         self.asteroid_damage_set.append(damage4)
         image5 = pygame.image.load('Sprites/asteroid5.png')
         self.asteroid_image_set.append(image5)
-        damage5 = 7
+        damage5 = 5
         self.asteroid_damage_set.append(damage5)
         image6 = pygame.image.load('Sprites/asteroid6.png')
         self.asteroid_image_set.append(image6)
-        damage6 = 8
+        damage6 = 4
         self.asteroid_damage_set.append(damage6)
 
     def render_level(self, fps):
@@ -343,8 +347,10 @@ class Universe(Level):
         for sprite in self.spaceship_group:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
 
-        self.spaceship.debugging(self.screen, fps)
-        self.debugging()
+        self.hud.draw_hud(self.screen)
+
+        #self.spaceship.debugging(self.screen, fps)
+        #self.debugging()
 
     def set_dt(self, dt):
         self.spaceship.set_dt(dt)
