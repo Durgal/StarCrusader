@@ -16,11 +16,12 @@ import math
 from asteroid import Asteroid
 from spaceship import Spaceship
 from spaceship import Camera
+from star_field import Star
 from hero import Hero
 from pirate import Pirate
 from item import Fuel
 from ground import Ground
-from star_field import *
+from laser import Laser
 
 
 # Constants
@@ -64,7 +65,7 @@ class Level:
         self.player = player
 
     def draw(self, screen):
-        screen.fill(BLACK)
+        #screen.fill(BLACK)
         if self.background:
             screen.blit(self.background, (0,0))
 
@@ -78,14 +79,19 @@ class Planet(Level):
         player = Hero()
         Level.__init__(self, player)
         self.screen = screen
-        self.background = pygame.image.load("Sprites/Planet.png").convert()
+        self.background = pygame.image.load("Sprites/Planet.png").convert_alpha()
         self.planet_angle = 0
         self.time = 0
         self.stars = Star(self.screen)
+        self.ground = Ground(450, 698)
 
-        # test item creation; create fuel
-        self.entity_list = Fuel(700, 700)
-        self.ground = Ground(450,698)
+        # test item creation
+        self.entity_list = pygame.sprite.Group()
+        self.entity_list.add(Fuel(700, 700))
+        self.laser = pygame.sprite.Group()
+        self.laser.add(Laser(450, 450))
+
+        self.entity_list.add(self.laser)
 
     def get_input(self):
         """ Input Function for Planet Level """
@@ -106,32 +112,35 @@ class Planet(Level):
     def update(self):
         """ Update all entities on the Planet -- TODO: collisions, gravity etc """
         self.time += 1
-        self.entity_list.update()
         self.player.update(self.entity_list, self.ground)
+        self.rotate_right(self.laser)
 
-    def rotate_right(self, object):
+    def rotate_right(self, object_list):
         """ Rotates an entity right around a given sized circle """
-        object.rect.x = CENTER_X + (object.center_x - (CENTER_X)) * math.cos(object.angle) - (object.center_y - (CENTER_Y)) * math.sin(object.angle)
-        object.rect.y = CENTER_Y + (object.center_x - (CENTER_X)) * math.sin(object.angle) + (object.center_y - (CENTER_Y)) * math.cos(object.angle)
-        object.angle += PLAYER_SPEED
-        self.planet_angle = object.angle
+        for object in object_list:
+            object.rect.x = CENTER_X + (object.center_x - (CENTER_X)) * math.cos(object.angle) - (object.center_y - (CENTER_Y)) * math.sin(object.angle)
+            object.rect.y = CENTER_Y + (object.center_x - (CENTER_X)) * math.sin(object.angle) + (object.center_y - (CENTER_Y)) * math.cos(object.angle)
+            object.angle += PLAYER_SPEED
+            self.planet_angle = object.angle
 
-    def rotate_left(self, object):
+    def rotate_left(self, object_list):
         """ Rotates an entity left around a given sized circle """
-        object.rect.x = CENTER_X + (object.center_x - (CENTER_X)) * math.cos(object.angle) - (object.center_y - (CENTER_Y)) * math.sin(object.angle)
-        object.rect.y = CENTER_Y + (object.center_x - (CENTER_X)) * math.sin(object.angle) + (object.center_y - (CENTER_Y)) * math.cos(object.angle)
-        object.angle -= PLAYER_SPEED
-        self.planet_angle = object.angle
+        for object in object_list:
+            object.rect.x = CENTER_X + (object.center_x - (CENTER_X)) * math.cos(object.angle) - (object.center_y - (CENTER_Y)) * math.sin(object.angle)
+            object.rect.y = CENTER_Y + (object.center_x - (CENTER_X)) * math.sin(object.angle) + (object.center_y - (CENTER_Y)) * math.cos(object.angle)
+            object.angle -= PLAYER_SPEED
+            self.planet_angle = object.angle
 
     def set_dt(self, dt):
         pass
 
     def render_level(self, fps):
         """ Draw background and all entities on Planet """
+        self.stars.draw_stars(self.screen, self.player.move_speed)
         self.draw(self.screen)
-        self.stars.draw_stars(self.screen,self.player.move_speed)
         self.screen.blit(self.player.image, self.player.get_pos())
-        self.screen.blit(self.entity_list.image, self.entity_list.get_pos())
+        self.laser.draw(self.screen)
+        self.entity_list.draw(self.screen)
 
         """ For Debug """
         if pygame.font:
