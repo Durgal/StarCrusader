@@ -28,10 +28,11 @@ class Hero(pygame.sprite.Sprite):
         self.sprite_stopped = Sprite("Sprites/Hero.png", 44, 44)
         self.angle = 0
         self.velocity = 0
-        self.gravity = -.5
+        self.gravity = -.25
         self.collision = False
         self.on_ground = False
         self.falling = False
+        self.move_speed = 0
         self.direction = "R"
 
         self.image = self.sprite.get_image(0, 0)
@@ -54,11 +55,17 @@ class Hero(pygame.sprite.Sprite):
         self.sprite.animate(time)
         self.direction = direction
 
+        if (direction == "R"):
+            self.move_speed = -.5
+        else:
+            self.move_speed = .5
+
     def jump(self):
         if self.on_ground == True:
             self.velocity = 6
 
     def stop(self ,time):
+        self.move_speed = 0
         if self.sprite.current_sprite != 0:
             self.sprite.animate(time)
         else:

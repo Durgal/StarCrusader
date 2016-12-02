@@ -20,6 +20,7 @@ from hero import Hero
 from pirate import Pirate
 from item import Fuel
 from ground import Ground
+from star_field import *
 
 
 # Constants
@@ -80,6 +81,7 @@ class Planet(Level):
         self.background = pygame.image.load("Sprites/Planet.png").convert()
         self.planet_angle = 0
         self.time = 0
+        self.stars = Star(self.screen)
 
         # test item creation; create fuel
         self.entity_list = Fuel(700, 700)
@@ -127,6 +129,7 @@ class Planet(Level):
     def render_level(self, fps):
         """ Draw background and all entities on Planet """
         self.draw(self.screen)
+        self.stars.draw_stars(self.screen,self.player.move_speed)
         self.screen.blit(self.player.image, self.player.get_pos())
         self.screen.blit(self.entity_list.image, self.entity_list.get_pos())
 
