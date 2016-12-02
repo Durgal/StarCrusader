@@ -29,17 +29,18 @@ FUEL_CAPACITY = 100
 FUEL_DEPLETION_RATE = 7
 HEALTH_CAPACITY = 1000000
 ENERGY_CAPACITY = 100
-ENERGY_DEPLETION_RATE = 0
-FIRE_RATE = 500
-LASER_SPEED = vec(0, -7)
+ENERGY_DEPLETION_RATE = 10
+FIRE_RATE = 200
+LASER_SPEED = vec(0, -15)
 LASER_ROT_OFFSET = 90
-LASER_DURATION = 0
+LASER_DURATION = 500
 LASER_OFFSET = vec(0, -20)
 
 
 class Spaceship(pygame.sprite.Sprite):
-    def __init__(self, sprite_group, x=STARTING_POS_X, y=STARTING_POS_Y):
+    def __init__(self, sprite_group, laser_group, x=STARTING_POS_X, y=STARTING_POS_Y):
         self.group = sprite_group
+        self.laser_group = laser_group
         pygame.sprite.Sprite.__init__(self, self.group)
         self.image = pygame.image.load('Sprites/spaceship.png')
         self.rect = self.image.get_rect()
@@ -74,14 +75,17 @@ class Spaceship(pygame.sprite.Sprite):
             if ROTATE_RIGHT == event:
                 self.rot_speed = -ROTATION_RATE
                 self.rotate_sprite()
-        if SHOOT == event:
-            if 0 < self.energy:
-                now = pygame.time.get_ticks()
-                if now - self.last_shot > FIRE_RATE:
-                    self.last_shot = now
-                    direction = self.velocity.rotate(-self.rotation)
-                    Laser(self.group, self.rect, direction, (self.rotation - LASER_ROT_OFFSET))
-                    self.energy -= ENERGY_DEPLETION_RATE
+
+    def shoot_laser(self):
+        if 0 < self.energy:
+            now = pygame.time.get_ticks()
+            if now - self.last_shot > FIRE_RATE:
+                self.last_shot = now
+                velocity = self.velocity + LASER_SPEED.rotate(-self.rotation)
+                position = self.position
+                rotation = self.rotation
+                Laser(self.laser_group, position, velocity, rotation)
+                self.energy -= ENERGY_DEPLETION_RATE
 
     def deplete_fuel(self):
         self.fuel -= (FUEL_DEPLETION_RATE * self.dt)
@@ -164,16 +168,16 @@ class Spaceship(pygame.sprite.Sprite):
 
 
 class Laser(pygame.sprite.Sprite):
-    def __init__(self, sprite_group, spaceship_rect, direction, rotation):
+    def __init__(self, sprite_group, position, velocity, rotation):
         self.group = sprite_group
         pygame.sprite.Sprite.__init__(self, self.group)
         self.image = pygame.image.load('Sprites/laser.png')
         self.rect = self.image.get_rect()
-        self.rect.center = self.image.get_rect().center
-        self.position = spaceship_rect.center
-        self.velocity = direction
-        self.rotation = rotation
-        self.duration = 0
+        self.rect.center = position
+        self.time_shot = pygame.time.get_ticks()
+        self.velocity = velocity
+        self.position = self.rect.center
+        self.rotation = rotation + LASER_ROT_OFFSET
 
         self.orig_img = self.image
         self.orig_center = self.rect.center
@@ -184,11 +188,14 @@ class Laser(pygame.sprite.Sprite):
         self.image = pygame.transform.rotate(self.orig_img, self.rotation)
         self.rect = self.image.get_rect(center=self.orig_center)
 
-    def collided(self, damage):
+    def collided(self):
         self.kill()
 
     def update(self):
-        self.position += self.velocity + LASER_SPEED
+        if pygame.time.get_ticks() - self.time_shot > LASER_DURATION:
+            self.kill()
+
+        self.position += self.velocity
         self.rect.center = self.position
 
 
