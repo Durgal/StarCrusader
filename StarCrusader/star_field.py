@@ -14,7 +14,7 @@ import pygame
 from random import randrange, choice
 
 
-STAR_MAX = 50
+STAR_MAX = 25
 
 class Star():
     def __init__(self, screen):

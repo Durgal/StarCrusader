@@ -64,7 +64,7 @@ class Level:
         self.player = player
 
     def draw(self, screen):
-        screen.fill(BLACK)
+        #screen.fill(BLACK)
         if self.background:
             screen.blit(self.background, (0,0))
 
@@ -78,7 +78,7 @@ class Planet(Level):
         player = Hero()
         Level.__init__(self, player)
         self.screen = screen
-        self.background = pygame.image.load("Sprites/Planet.png").convert()
+        self.background = pygame.image.load("Sprites/Planet.png").convert_alpha()
         self.planet_angle = 0
         self.time = 0
         self.stars = Star(self.screen)
@@ -128,8 +128,8 @@ class Planet(Level):
 
     def render_level(self, fps):
         """ Draw background and all entities on Planet """
+        self.stars.draw_stars(self.screen, self.player.move_speed)
         self.draw(self.screen)
-        self.stars.draw_stars(self.screen,self.player.move_speed)
         self.screen.blit(self.player.image, self.player.get_pos())
         self.screen.blit(self.entity_list.image, self.entity_list.get_pos())
 

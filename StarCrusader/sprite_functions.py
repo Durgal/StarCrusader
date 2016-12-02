@@ -18,6 +18,7 @@ YELLOW = (0, 255, 0)
 BLUE = (0, 0, 255)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+PINK = (255,75, 255)
 
 mFPS = 10
 
@@ -34,7 +35,7 @@ class Sprite(object):
     def get_image(self, x, y):
         image = pygame.Surface([self.width, self.height]).convert()
         image.blit(self.sprite_sheet, (x, y), (self.current_sprite*self.width, 0, self.width, self.height))
-        image.set_colorkey(BLACK)
+        image.set_colorkey(PINK)
         return image
 
     def flip_image(self):

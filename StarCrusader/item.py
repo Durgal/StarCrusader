@@ -20,7 +20,7 @@ class Fuel(pygame.sprite.Sprite):
     def __init__(self, x, y):
 
         super().__init__()
-        self.sprite = Sprite("Sprites/Fuel.png", 44, 44)
+        self.sprite = Sprite("Sprites/Fuel.png", 36, 36)
         self.initial_x = x
         self.initial_y = y
         self.change_x = 0
