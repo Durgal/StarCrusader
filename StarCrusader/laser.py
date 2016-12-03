@@ -21,6 +21,7 @@ class Laser(pygame.sprite.Sprite):
     def __init__(self, x, y):
 
         super().__init__()
+        self.type = "laser"
         self.sprite = Sprite("Sprites/Hero_Laser.png", 44, 44)
         self.initial_x = x
         self.initial_y = y

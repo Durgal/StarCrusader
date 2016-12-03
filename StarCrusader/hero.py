@@ -62,9 +62,9 @@ class Hero(pygame.sprite.Sprite):
         self.direction = direction
 
         if (direction == "R"):
-            self.move_speed = -.0025
+            self.move_speed = -.002
         else:
-            self.move_speed = .0025
+            self.move_speed = .002
 
     def jump(self):
         if self.on_ground == True:

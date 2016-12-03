@@ -114,8 +114,12 @@ class Planet(Level):
         """ Update all entities on the Planet -- collisions, rotation, gravity etc """
         self.time += 1                                      # increment time
         self.player.update(self.entity_list, self.ground)   # update player
-        self.rotate_planet(self.laser)                      # rotate laser objects
-        self.rotate_planet(self.entity_list)                      # rotate entities with speed
+        self.rotate_planet(self.laser)                      # rotate laser instances
+        self.rotate_planet(self.entity_list)                # rotate entities with speed
+
+        for object in self.entity_list:
+            if object.type == "enemy":
+                object.animate(self.time, object.direction)
 
     def rotate_planet(self, entity_list):
         """ Rotates an entity right around a given sized circle """

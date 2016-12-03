@@ -12,8 +12,8 @@
 
 from random import randrange, choice
 
-
 STAR_MAX = 25
+
 
 class Star():
     def __init__(self, screen):
