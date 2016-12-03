@@ -30,6 +30,8 @@ class Hero(pygame.sprite.Sprite):
         super().__init__()
         self.sprite = Sprite("Sprites/Hero_Sheet.png", 44, 44)
         self.sprite_stopped = Sprite("Sprites/Hero.png", 44, 44)
+        self.sprite_shoot_l = Sprite("Sprites/Hero_Shoot_L.png", 44, 44)
+        self.sprite_shoot_r = Sprite("Sprites/Hero_Shoot_R.png", 44, 44)
         self.angle = 0
         self.velocity = 0
         self.gravity = -.25
@@ -71,6 +73,12 @@ class Hero(pygame.sprite.Sprite):
             self.move_speed = -.002
         else:
             self.move_speed = .002
+
+    def shoot(self, direction):
+        if direction == "R":
+            self.image = self.sprite_shoot_r.get_image(0, 0)
+        else:
+            self.image = self.sprite_shoot_l.get_image(0, 0)
 
     def jump(self):
         if self.on_ground == True:

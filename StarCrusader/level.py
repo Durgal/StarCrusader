@@ -110,7 +110,7 @@ class Planet(Level):
             self.player.jump()
 
         if pygame.key.get_pressed()[pygame.K_SPACE] != 0 and self.player.center_y:
-            print(self.player.get_pos())
+            self.player.shoot(self.player.direction)
             laser = Laser(self.player.get_x(),self.player.get_y())
             self.laser.add(laser)
             laser.set_direction(self.player.direction)
@@ -151,11 +151,13 @@ class Planet(Level):
         if pygame.font:
             font = pygame.font.Font("courbd.ttf", 12)
 
+            cur_fps = font.render('Fps: ' + str(fps), 1, (255, 255, 255))
             cur_f = font.render('F: ' + str(self.player.falling), 1, (255, 255, 255))
             cur_g = font.render('G: ' + str(self.player.on_ground), 1, (255, 255, 255))
             cur_d = font.render('D: ' + str(self.player.direction), 1, (255, 255, 255))
             cur_v = font.render('V: ' + str(self.player.velocity), 1, (255, 255, 255))
 
+            self.screen.blit(cur_fps, (5, 820))
             self.screen.blit(cur_f, (5, 835))
             self.screen.blit(cur_g, (5, 850))
             self.screen.blit(cur_d, (5, 865))
