@@ -15,9 +15,6 @@ import pygame
 
 from Utilities.sprite_functions import Sprite
 
-STARTING_POS_X = 450
-STARTING_POS_Y = 655
-
 
 class Pirate(pygame.sprite.Sprite):
 
@@ -29,7 +26,7 @@ class Pirate(pygame.sprite.Sprite):
         self.initial_y = y
         self.angle = 0
         self.direction = "R"
-        self.speed = 1
+        self.speed = -.0005
 
         self.image = self.sprite.get_image(0, 0)
         self.center_x = x - self.image.get_size()[0] / 2

@@ -55,7 +55,6 @@ ASTEROID_INDEX = 1
 # Planet
 CENTER_X = 432
 CENTER_Y = 1550
-PLAYER_SPEED = .0025
 
 
 class Level:
@@ -86,13 +85,14 @@ class Planet(Level):
         self.stars = Star(self.screen)
         self.ground = Ground(450, 698)
 
-        # test item creation
+        # test entity creation
         self.entity_list = pygame.sprite.Group()
         self.entity_list.add(Fuel(700, 700))
-        self.laser = pygame.sprite.Group()
-        self.laser.add(Laser(450, 450))
+        self.entity_list.add(Pirate(700, 690))
 
-        self.entity_list.add(self.laser)
+        self.laser = pygame.sprite.Group()
+        self.laser.add(Laser(450, 650))
+
 
     def get_input(self):
         """ Input Function for Planet Level """
@@ -114,7 +114,8 @@ class Planet(Level):
         """ Update all entities on the Planet -- collisions, rotation, gravity etc """
         self.time += 1                                      # increment time
         self.player.update(self.entity_list, self.ground)   # update player
-        self.rotate_planet(self.laser)                        # rotate laser objects
+        self.rotate_planet(self.laser)                      # rotate laser objects
+        self.rotate_planet(self.entity_list)                      # rotate entities with speed
 
     def rotate_planet(self, entity_list):
         """ Rotates an entity right around a given sized circle """
