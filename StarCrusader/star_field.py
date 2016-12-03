@@ -30,7 +30,7 @@ class Star():
     def draw_stars(self, screen, speed):
         "Draw star field"
         for star in self.stars:
-            star[0] += star[2]*speed
+            star[0] += star[2]*speed*100
             if star[0] >= screen.get_width():   # For travelling right
                 star[0] = 0
                 star[1] = randrange(0,screen.get_width())

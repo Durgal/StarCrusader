@@ -21,10 +21,10 @@ class Laser(pygame.sprite.Sprite):
     def __init__(self, x, y):
 
         super().__init__()
-        self.sprite = Sprite("Sprites/Pirate.png", 44, 44)
+        self.sprite = Sprite("Sprites/Hero_Laser.png", 44, 44)
         self.initial_x = x
         self.initial_y = y
-        self.speed = 0
+        self.speed = -.002
         self.angle = 0
 
         self.image = self.sprite.get_image(0, 0)

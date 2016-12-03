@@ -46,7 +46,7 @@ class Hero(pygame.sprite.Sprite):
         self.rect.x = self.center_x
         self.rect.y = self.center_y
 
-        self.snd_jump = Audio(snd_jump)
+        #self.snd_jump = Audio(snd_jump)
 
     def get_pos(self):
         return(self.rect.x,self.rect.y)
@@ -62,13 +62,13 @@ class Hero(pygame.sprite.Sprite):
         self.direction = direction
 
         if (direction == "R"):
-            self.move_speed = -.5
+            self.move_speed = -.0025
         else:
-            self.move_speed = .5
+            self.move_speed = .0025
 
     def jump(self):
         if self.on_ground == True:
-            self.snd_jump.play()
+            #self.snd_jump.play()
             self.velocity = 6
 
     def stop(self ,time):

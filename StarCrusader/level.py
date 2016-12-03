@@ -67,7 +67,6 @@ class Level:
         self.hud = Hud()
 
     def draw(self, screen):
-        #screen.fill(BLACK)
         if self.background:
             screen.blit(self.background, (0,0))
 
@@ -98,10 +97,10 @@ class Planet(Level):
     def get_input(self):
         """ Input Function for Planet Level """
         if pygame.key.get_pressed()[pygame.K_a] != 0:
-            self.rotate_right(self.entity_list)
+            self.rotate_planet(self.entity_list)
             self.player.move(self.time, "L")
         elif pygame.key.get_pressed()[pygame.K_d] != 0:
-            self.rotate_left(self.entity_list)
+            self.rotate_planet(self.entity_list)
             self.player.move(self.time, "R")
         elif pygame.key.get_pressed()[pygame.K_a] == 0:
             self.player.stop(self.time)
@@ -112,25 +111,17 @@ class Planet(Level):
             self.player.jump()
 
     def update(self):
-        """ Update all entities on the Planet -- TODO: collisions, gravity etc """
-        self.time += 1
-        self.player.update(self.entity_list, self.ground)
-        self.rotate_right(self.laser)
+        """ Update all entities on the Planet -- collisions, rotation, gravity etc """
+        self.time += 1                                      # increment time
+        self.player.update(self.entity_list, self.ground)   # update player
+        self.rotate_planet(self.laser)                        # rotate laser objects
 
-    def rotate_right(self, object_list):
+    def rotate_planet(self, entity_list):
         """ Rotates an entity right around a given sized circle """
-        for object in object_list:
+        for object in entity_list:
             object.rect.x = CENTER_X + (object.center_x - (CENTER_X)) * math.cos(object.angle) - (object.center_y - (CENTER_Y)) * math.sin(object.angle)
             object.rect.y = CENTER_Y + (object.center_x - (CENTER_X)) * math.sin(object.angle) + (object.center_y - (CENTER_Y)) * math.cos(object.angle)
-            object.angle += PLAYER_SPEED
-            self.planet_angle = object.angle
-
-    def rotate_left(self, object_list):
-        """ Rotates an entity left around a given sized circle """
-        for object in object_list:
-            object.rect.x = CENTER_X + (object.center_x - (CENTER_X)) * math.cos(object.angle) - (object.center_y - (CENTER_Y)) * math.sin(object.angle)
-            object.rect.y = CENTER_Y + (object.center_x - (CENTER_X)) * math.sin(object.angle) + (object.center_y - (CENTER_Y)) * math.cos(object.angle)
-            object.angle -= PLAYER_SPEED
+            object.angle += self.player.move_speed+object.speed
             self.planet_angle = object.angle
 
     def set_dt(self, dt):
@@ -143,6 +134,7 @@ class Planet(Level):
         self.screen.blit(self.player.image, self.player.get_pos())
         self.laser.draw(self.screen)
         self.entity_list.draw(self.screen)
+        self.hud.draw_hud(self.screen)
 
         """ For Debug """
         if pygame.font:
@@ -194,7 +186,6 @@ class Universe(Level):
         random_asteroid = random.randint(0, 5)
         return Asteroid(sprite_group, self.asteroid_image_set[random_asteroid], random.randint(lower_x, upper_x), random.randint(lower_y, upper_y), self.asteroid_damage_set[random_asteroid])
 
-    # TODO: Chunks seem important... lets move to separate module if time permits?
     def generate_chunk(self, chunk_x_coord, chunk_y_coord):
         chunk_already_exists = False
         chunk_sprite_group = pygame.sprite.Group()
