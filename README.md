@@ -1,4 +1,4 @@
- Star Crusader
+ # Star Crusader
  -------------
   
  Star Crusader is an Asteroid style game built in python 3.0 using pygame. The goal is to collect as much treasure as you can without 
