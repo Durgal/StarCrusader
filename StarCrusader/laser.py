@@ -21,7 +21,8 @@ class Laser(pygame.sprite.Sprite):
     def __init__(self, x, y):
 
         super().__init__()
-        self.sprite = Sprite("Sprites/Pirate.png", 44, 44)
+        self.type = "laser"
+        self.sprite = Sprite("Sprites/Hero_Laser.png", 44, 44)
         self.initial_x = x
         self.initial_y = y
         self.speed = 0
@@ -37,3 +38,8 @@ class Laser(pygame.sprite.Sprite):
     def get_pos(self):
         return(self.rect.x,self.rect.y)
 
+    def set_direction(self, direction):
+        if direction == "R":
+            self.speed = .005
+        else:
+            self.speed = -.005

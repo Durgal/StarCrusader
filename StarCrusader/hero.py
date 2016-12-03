@@ -30,6 +30,8 @@ class Hero(pygame.sprite.Sprite):
         super().__init__()
         self.sprite = Sprite("Sprites/Hero_Sheet.png", 44, 44)
         self.sprite_stopped = Sprite("Sprites/Hero.png", 44, 44)
+        self.sprite_shoot_l = Sprite("Sprites/Hero_Shoot_L.png", 44, 44)
+        self.sprite_shoot_r = Sprite("Sprites/Hero_Shoot_R.png", 44, 44)
         self.angle = 0
         self.velocity = 0
         self.gravity = -.25
@@ -46,10 +48,16 @@ class Hero(pygame.sprite.Sprite):
         self.rect.x = self.center_x
         self.rect.y = self.center_y
 
-        self.snd_jump = Audio(snd_jump)
+        #self.snd_jump = Audio(snd_jump)
 
     def get_pos(self):
         return(self.rect.x,self.rect.y)
+
+    def get_x(self):
+        return(self.rect.x + self.image.get_size()[0] / 2)
+
+    def get_y(self):
+        return(self.rect.y + self.image.get_size()[1] / 2)
 
     def move(self, time, direction):
         old_direction = self.direction
@@ -62,13 +70,19 @@ class Hero(pygame.sprite.Sprite):
         self.direction = direction
 
         if (direction == "R"):
-            self.move_speed = -.5
+            self.move_speed = -.002
         else:
-            self.move_speed = .5
+            self.move_speed = .002
+
+    def shoot(self, direction):
+        if direction == "R":
+            self.image = self.sprite_shoot_r.get_image(0, 0)
+        else:
+            self.image = self.sprite_shoot_l.get_image(0, 0)
 
     def jump(self):
         if self.on_ground == True:
-            self.snd_jump.play()
+            #self.snd_jump.play()
             self.velocity = 6
 
     def stop(self ,time):

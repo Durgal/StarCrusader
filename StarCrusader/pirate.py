@@ -15,21 +15,19 @@ import pygame
 
 from Utilities.sprite_functions import Sprite
 
-STARTING_POS_X = 450
-STARTING_POS_Y = 655
-
 
 class Pirate(pygame.sprite.Sprite):
 
     def __init__(self, x, y):
 
         super().__init__()
+        self.type = "enemy"
         self.sprite = Sprite("Sprites/Pirate_Sheet.png", 44, 44)
         self.initial_x = x
         self.initial_y = y
         self.angle = 0
         self.direction = "R"
-        self.speed = 1
+        self.speed = .0005
 
         self.image = self.sprite.get_image(0, 0)
         self.center_x = x - self.image.get_size()[0] / 2
@@ -41,7 +39,7 @@ class Pirate(pygame.sprite.Sprite):
     def get_pos(self):
         return(self.rect.x,self.rect.y)
 
-    def move(self, time, direction):
+    def animate(self, time, direction):
         old_direction = self.direction
 
         if old_direction != direction:

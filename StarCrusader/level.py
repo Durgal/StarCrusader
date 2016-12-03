@@ -55,7 +55,6 @@ ASTEROID_INDEX = 1
 # Planet
 CENTER_X = 432
 CENTER_Y = 1550
-PLAYER_SPEED = .0025
 
 
 class Level:
@@ -67,7 +66,6 @@ class Level:
         self.hud = Hud()
 
     def draw(self, screen):
-        #screen.fill(BLACK)
         if self.background:
             screen.blit(self.background, (0,0))
 
@@ -87,21 +85,21 @@ class Planet(Level):
         self.stars = Star(self.screen)
         self.ground = Ground(450, 698)
 
-        # test item creation
+        # test entity creation
         self.entity_list = pygame.sprite.Group()
         self.entity_list.add(Fuel(700, 700))
-        self.laser = pygame.sprite.Group()
-        self.laser.add(Laser(450, 450))
+        self.entity_list.add(Pirate(700, 690))
 
-        self.entity_list.add(self.laser)
+        self.laser = pygame.sprite.Group()
+
 
     def get_input(self):
         """ Input Function for Planet Level """
         if pygame.key.get_pressed()[pygame.K_a] != 0:
-            self.rotate_right(self.entity_list)
+            self.rotate_planet(self.entity_list)
             self.player.move(self.time, "L")
         elif pygame.key.get_pressed()[pygame.K_d] != 0:
-            self.rotate_left(self.entity_list)
+            self.rotate_planet(self.entity_list)
             self.player.move(self.time, "R")
         elif pygame.key.get_pressed()[pygame.K_a] == 0:
             self.player.stop(self.time)
@@ -111,26 +109,30 @@ class Planet(Level):
         if pygame.key.get_pressed()[pygame.K_w] != 0 and self.player.center_y:
             self.player.jump()
 
+        if pygame.key.get_pressed()[pygame.K_SPACE] != 0 and self.player.center_y:
+            self.player.shoot(self.player.direction)
+            laser = Laser(self.player.get_x(),self.player.get_y())
+            self.laser.add(laser)
+            laser.set_direction(self.player.direction)
+
+
     def update(self):
-        """ Update all entities on the Planet -- TODO: collisions, gravity etc """
-        self.time += 1
-        self.player.update(self.entity_list, self.ground)
-        self.rotate_right(self.laser)
+        """ Update all entities on the Planet -- collisions, rotation, gravity etc """
+        self.time += 1                                      # increment time
+        self.player.update(self.entity_list, self.ground)   # update player
+        self.rotate_planet(self.laser)                      # rotate laser instances
+        self.rotate_planet(self.entity_list)                # rotate entities with speed
 
-    def rotate_right(self, object_list):
+        for object in self.entity_list:
+            if object.type == "enemy":
+                object.animate(self.time, object.direction)
+
+    def rotate_planet(self, entity_list):
         """ Rotates an entity right around a given sized circle """
-        for object in object_list:
+        for object in entity_list:
             object.rect.x = CENTER_X + (object.center_x - (CENTER_X)) * math.cos(object.angle) - (object.center_y - (CENTER_Y)) * math.sin(object.angle)
             object.rect.y = CENTER_Y + (object.center_x - (CENTER_X)) * math.sin(object.angle) + (object.center_y - (CENTER_Y)) * math.cos(object.angle)
-            object.angle += PLAYER_SPEED
-            self.planet_angle = object.angle
-
-    def rotate_left(self, object_list):
-        """ Rotates an entity left around a given sized circle """
-        for object in object_list:
-            object.rect.x = CENTER_X + (object.center_x - (CENTER_X)) * math.cos(object.angle) - (object.center_y - (CENTER_Y)) * math.sin(object.angle)
-            object.rect.y = CENTER_Y + (object.center_x - (CENTER_X)) * math.sin(object.angle) + (object.center_y - (CENTER_Y)) * math.cos(object.angle)
-            object.angle -= PLAYER_SPEED
+            object.angle += self.player.move_speed+object.speed
             self.planet_angle = object.angle
 
     def set_dt(self, dt):
@@ -140,19 +142,22 @@ class Planet(Level):
         """ Draw background and all entities on Planet """
         self.stars.draw_stars(self.screen, self.player.move_speed)
         self.draw(self.screen)
-        self.screen.blit(self.player.image, self.player.get_pos())
         self.laser.draw(self.screen)
+        self.screen.blit(self.player.image, self.player.get_pos())
         self.entity_list.draw(self.screen)
+        self.hud.draw_hud(self.screen)
 
         """ For Debug """
         if pygame.font:
             font = pygame.font.Font("courbd.ttf", 12)
 
+            cur_fps = font.render('Fps: ' + str(fps), 1, (255, 255, 255))
             cur_f = font.render('F: ' + str(self.player.falling), 1, (255, 255, 255))
             cur_g = font.render('G: ' + str(self.player.on_ground), 1, (255, 255, 255))
             cur_d = font.render('D: ' + str(self.player.direction), 1, (255, 255, 255))
             cur_v = font.render('V: ' + str(self.player.velocity), 1, (255, 255, 255))
 
+            self.screen.blit(cur_fps, (5, 820))
             self.screen.blit(cur_f, (5, 835))
             self.screen.blit(cur_g, (5, 850))
             self.screen.blit(cur_d, (5, 865))
@@ -194,7 +199,6 @@ class Universe(Level):
         random_asteroid = random.randint(0, 5)
         return Asteroid(sprite_group, self.asteroid_image_set[random_asteroid], random.randint(lower_x, upper_x), random.randint(lower_y, upper_y), self.asteroid_damage_set[random_asteroid])
 
-    # TODO: Chunks seem important... lets move to separate module if time permits?
     def generate_chunk(self, chunk_x_coord, chunk_y_coord):
         chunk_already_exists = False
         chunk_sprite_group = pygame.sprite.Group()
