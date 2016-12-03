@@ -1,34 +1,41 @@
-# Star Crusader
+ # Star Crusader
+  
+ Star Crusader is an Asteroid style game built in python 3.0 using pygame. The goal is to collect as much treasure as you can without 
+ running out of fuel or dying. Upon starting the game, asteroids and planets will randomly generate around the player. The player must 
+ avoid the asteroids and land on planets to get fuel and collect treasure. Planets and randomly generated resource-filled asteroids 
+ contain fuel/health/energy to aid the player.
 
-Star Crusader is an Asteroid style game built in python 3.0 using pygame. The goal is to collect as much treasure as you can without running out of fuel or dying. Upon starting the game, asteroids and planets will randomly generate around the player. The player must avoid the asteroids and land on planets to get fuel and collect treasure. Planets and randomly generated resource-filled asteroids contain fuel/health/energy to aid the player.
 
-*How to build*
 
-*How to run*
-
-*Project dependencies and external software*
-
+Dependencies
+------------
+ In order to build, run, or contribute to this project you will need it's dependencies: python version 3.4.2 and pygame.
+ 
+ 
+  
 Contributing to Star Crusader
 ----------------------------
-To contribute to our project, first [request a feature](https://github.com/cs360f16/StarCrusader/readme#request-a-feature) to ensure positive feedback.
-
-Once you receive positive feedback, implement the feature and create a new pull request.  Name it with the same name as your feature request.  Provide the same information you provided with the feature request as well.
-
-In order for a new feature to be committed, it must follow [PEP8 Python Coding Standards.](https://www.python.org/dev/peps/pep-0008/)
-
-
-
+ To contribute to our project, first [request a feature](https://github.com/cs360f16/StarCrusader/readme#request-a-feature) to ensure 
+ positive feedback.
+  
+ Once you receive positive feedback, implement the feature and create a new pull request.  Name it with the same name as your feature 
+ request.  Provide the same information you provided with the feature request as well.
+  
+  In order for a new feature to be committed, it must follow [PEP8 Python Coding Standards.](https://www.python.org/dev/peps/pep-0008/)
+  
+  
+  
 Request a Feature
 -----------------
-To request a feature, open a new issue on the [github source](https://github.com/cs360f16/StarCrusader) and tag it with [New Feature]. (ex: [New Feature] Spaceship Upgrades)
-
-Provide as much of the following information as possible:
-* What is the new feature?
-* How will this feature impact the game?
-* Is this new feature necessary?
-* A general plan of how it can be incorporated.
-* Will a screenshot help explain your feature?
-
+ To request a feature, open a new issue on the [github source](https://github.com/cs360f16/StarCrusader) and tag it with [New Feature]. 
+ (ex: [New Feature] Spaceship Upgrades)
+  
+  Provide as much of the following information as possible:
+  * What is the new feature?
+  * How will this feature impact the game?
+  * Is this new feature necessary?
+  * A general plan of how it can be incorporated.
+  * Will a screenshot help explain your feature?
 
 
 Report a Bug
@@ -44,13 +51,23 @@ Provide as much of the following information as possible:
 
 
 
-Contact the Contributors
-------------------------
-
-
+ Contact the Contributors
+ ------------------------
+ In order to contact the contributors you may use either the contributors' joint email, starcrusader.game@gmail.com, or via their 
+ individual emails as listed below.
+ 
+ Chris Granat - chrisgranat@gmail.com
+  
+ Verity Cook - cook9874@pacificu.edu
+  
+ Michael Souza - souz2019@pacificu.edu
+ 
+ 
+ 
 Project Goals
 -------------
 
 
 License
 -------
+ GNU General Public License Version 3
