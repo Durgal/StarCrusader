@@ -51,6 +51,12 @@ class Hero(pygame.sprite.Sprite):
     def get_pos(self):
         return(self.rect.x,self.rect.y)
 
+    def get_x(self):
+        return(self.rect.x + self.image.get_size()[0] / 2)
+
+    def get_y(self):
+        return(self.rect.y + self.image.get_size()[1] / 2)
+
     def move(self, time, direction):
         old_direction = self.direction
 

@@ -91,7 +91,6 @@ class Planet(Level):
         self.entity_list.add(Pirate(700, 690))
 
         self.laser = pygame.sprite.Group()
-        self.laser.add(Laser(450, 650))
 
 
     def get_input(self):
@@ -109,6 +108,13 @@ class Planet(Level):
 
         if pygame.key.get_pressed()[pygame.K_w] != 0 and self.player.center_y:
             self.player.jump()
+
+        if pygame.key.get_pressed()[pygame.K_SPACE] != 0 and self.player.center_y:
+            print(self.player.get_pos())
+            laser = Laser(self.player.get_x(),self.player.get_y())
+            self.laser.add(laser)
+            laser.set_direction(self.player.direction)
+
 
     def update(self):
         """ Update all entities on the Planet -- collisions, rotation, gravity etc """
@@ -136,8 +142,8 @@ class Planet(Level):
         """ Draw background and all entities on Planet """
         self.stars.draw_stars(self.screen, self.player.move_speed)
         self.draw(self.screen)
-        self.screen.blit(self.player.image, self.player.get_pos())
         self.laser.draw(self.screen)
+        self.screen.blit(self.player.image, self.player.get_pos())
         self.entity_list.draw(self.screen)
         self.hud.draw_hud(self.screen)
 
