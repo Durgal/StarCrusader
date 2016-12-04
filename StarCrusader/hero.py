@@ -75,10 +75,11 @@ class Hero(pygame.sprite.Sprite):
             self.move_speed = .002
 
     def shoot(self, direction):
-        if direction == "R":
-            self.image = self.sprite_shoot_r.get_image(0, 0)
-        else:
-            self.image = self.sprite_shoot_l.get_image(0, 0)
+        if self.move_speed == 0:
+            if direction == "R":
+                self.image = self.sprite_shoot_r.get_image(0, 0)
+            else:
+                self.image = self.sprite_shoot_l.get_image(0, 0)
 
     def jump(self):
         if self.on_ground == True:
