@@ -18,6 +18,7 @@ from asteroid import Asteroid
 from spaceship import Spaceship
 from spaceship import Camera
 from star_field import Star
+from ship_landed import Ship_Landed
 from hero import Hero
 from pirate import Pirate
 from item import Fuel
@@ -78,10 +79,10 @@ class Planet(Level):
     def __init__(self, screen):
         player = Hero()
         Level.__init__(self, player)
+        self.DEBUG = False
         self.screen = screen
-        self.background = pygame.image.load("Sprites/Planet.png").convert_alpha()
-        self.planet_angle = 0
         self.time = 0
+        self.background = pygame.image.load("Sprites/Planet.png").convert_alpha()
         self.stars = Star(self.screen)
         self.ground = Ground(450, 698)
 
@@ -89,6 +90,7 @@ class Planet(Level):
         self.entity_list = pygame.sprite.Group()
         self.entity_list.add(Fuel(700, 700))
         self.entity_list.add(Pirate(700, 690))
+        self.ship = Ship_Landed(450,580)
 
         self.laser = pygame.sprite.Group()
 
@@ -111,9 +113,18 @@ class Planet(Level):
 
         if pygame.key.get_pressed()[pygame.K_SPACE] != 0 and self.player.center_y:
             self.player.shoot(self.player.direction)
-            laser = Laser(self.player.get_x(),self.player.get_y())
-            self.laser.add(laser)
-            laser.set_direction(self.player.direction)
+            time = pygame.time.get_ticks()
+            if time - self.player.laser_timer >= self.player.laser_cooldown:
+                self.player.laser_timer = time
+                laser = Laser(self.player.get_x(),self.player.get_y())
+                self.laser.add(laser)
+                laser.set_direction(self.player.direction)
+
+        if pygame.key.get_pressed()[pygame.K_F3]:
+            if self.DEBUG:
+                self.DEBUG = False
+            else:
+                self.DEBUG = True
 
 
     def update(self):
@@ -133,7 +144,6 @@ class Planet(Level):
             object.rect.x = CENTER_X + (object.center_x - (CENTER_X)) * math.cos(object.angle) - (object.center_y - (CENTER_Y)) * math.sin(object.angle)
             object.rect.y = CENTER_Y + (object.center_x - (CENTER_X)) * math.sin(object.angle) + (object.center_y - (CENTER_Y)) * math.cos(object.angle)
             object.angle += self.player.move_speed+object.speed
-            self.planet_angle = object.angle
 
     def set_dt(self, dt):
         pass
@@ -148,20 +158,21 @@ class Planet(Level):
         self.hud.draw_hud(self.screen)
 
         """ For Debug """
-        if pygame.font:
-            font = pygame.font.Font("courbd.ttf", 12)
+        if self.DEBUG:
+            if pygame.font:
+                font = pygame.font.Font("courbd.ttf", 12)
 
-            cur_fps = font.render('Fps: ' + str(fps), 1, (255, 255, 255))
-            cur_f = font.render('F: ' + str(self.player.falling), 1, (255, 255, 255))
-            cur_g = font.render('G: ' + str(self.player.on_ground), 1, (255, 255, 255))
-            cur_d = font.render('D: ' + str(self.player.direction), 1, (255, 255, 255))
-            cur_v = font.render('V: ' + str(self.player.velocity), 1, (255, 255, 255))
+                cur_fps = font.render('Fps: ' + str(fps), 1, (255, 255, 255))
+                cur_f = font.render('F: ' + str(self.player.falling), 1, (255, 255, 255))
+                cur_g = font.render('G: ' + str(self.player.on_ground), 1, (255, 255, 255))
+                cur_d = font.render('D: ' + str(self.player.direction), 1, (255, 255, 255))
+                cur_v = font.render('V: ' + str(self.player.velocity), 1, (255, 255, 255))
 
-            self.screen.blit(cur_fps, (5, 820))
-            self.screen.blit(cur_f, (5, 835))
-            self.screen.blit(cur_g, (5, 850))
-            self.screen.blit(cur_d, (5, 865))
-            self.screen.blit(cur_v, (5,880))
+                self.screen.blit(cur_fps, (5, 820))
+                self.screen.blit(cur_f, (5, 835))
+                self.screen.blit(cur_g, (5, 850))
+                self.screen.blit(cur_d, (5, 865))
+                self.screen.blit(cur_v, (5,880))
 
 
 class Universe(Level):

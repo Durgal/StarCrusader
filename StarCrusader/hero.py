@@ -22,6 +22,7 @@ STARTING_POS_Y = 655
 #Audio
 snd_jump = "Audio/jump.wav"
 
+PLAYER_SPEED = .0015
 
 class Hero(pygame.sprite.Sprite):
 
@@ -38,6 +39,8 @@ class Hero(pygame.sprite.Sprite):
         self.collision = False
         self.on_ground = False
         self.falling = False
+        self.laser_timer = 0
+        self.laser_cooldown = 300
         self.move_speed = 0
         self.direction = "R"
 
@@ -70,9 +73,9 @@ class Hero(pygame.sprite.Sprite):
         self.direction = direction
 
         if (direction == "R"):
-            self.move_speed = -.002
+            self.move_speed = -PLAYER_SPEED
         else:
-            self.move_speed = .002
+            self.move_speed = PLAYER_SPEED
 
     def shoot(self, direction):
         if self.move_speed == 0:
