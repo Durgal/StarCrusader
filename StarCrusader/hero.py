@@ -106,13 +106,13 @@ class Hero(pygame.sprite.Sprite):
         if self.velocity < 0:
             self.falling = True
 
-        collision = self.collision = self.sprite.get_collision(self.rect.x, self.rect.y, self.sprite.width, self.sprite.height, ground.rect.x, ground.rect.y, ground.sprite.width, ground.sprite.height)
+        self.collision = self.sprite.get_collision(self.rect.x, self.rect.y, self.sprite.width, self.sprite.height, ground.rect.x, ground.rect.y, ground.sprite.width, ground.sprite.height)
 
-        if not collision:
+        if not self.collision:
             self.on_ground = False
 
         # if player touches ground stop
-        if collision:
+        if self.collision:
             if self.falling == True:
                 self.falling = False
                 self.on_ground = True
@@ -128,8 +128,5 @@ class Hero(pygame.sprite.Sprite):
 
     def collision_check(self, object):
         if self.sprite.get_collision(self.rect.x, self.rect.y, self.sprite.width, self.sprite.height, object.rect.x, object.rect.y, object.sprite.width, object.sprite.height):
-            print(object.type)
             self.collision_entity = object.type
-        else:
-            self.collision_entity = None
 
