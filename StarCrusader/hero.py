@@ -36,6 +36,7 @@ class Hero(pygame.sprite.Sprite):
         self.angle = 0
         self.velocity = 0
         self.gravity = -.25
+        self.collision_entity = None
         self.collision = False
         self.on_ground = False
         self.falling = False
@@ -43,6 +44,11 @@ class Hero(pygame.sprite.Sprite):
         self.laser_cooldown = 300
         self.move_speed = 0
         self.direction = "R"
+
+        self.fuel = 0
+        self.health = 0
+        self.energy = 0
+        self.treasure = 0
 
         self.image = self.sprite.get_image(0, 0)
         self.center_x = STARTING_POS_X - self.image.get_size()[0] / 2
@@ -102,22 +108,28 @@ class Hero(pygame.sprite.Sprite):
 
         collision = self.collision = self.sprite.get_collision(self.rect.x, self.rect.y, self.sprite.width, self.sprite.height, ground.rect.x, ground.rect.y, ground.sprite.width, ground.sprite.height)
 
-        if collision == False:
+        if not collision:
             self.on_ground = False
 
         # if player touches ground stop
-        if collision == True:
+        if collision:
             if self.falling == True:
                 self.falling = False
                 self.on_ground = True
                 self.velocity = 0
 
         # fall if not on ground, else snap to position
-        if self.on_ground == False:
+        if not self.on_ground:
             self.velocity += self.gravity
         else:
             self.rect.y = self.center_y
 
         self.rect.y -= self.velocity
 
+    def collision_check(self, object):
+        if self.sprite.get_collision(self.rect.x, self.rect.y, self.sprite.width, self.sprite.height, object.rect.x, object.rect.y, object.sprite.width, object.sprite.height):
+            print(object.type)
+            self.collision_entity = object.type
+        else:
+            self.collision_entity = None
 

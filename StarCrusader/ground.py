@@ -21,6 +21,7 @@ class Ground(pygame.sprite.Sprite):
     def __init__(self, x, y):
 
         super().__init__()
+        self.type = "ground"
         self.sprite = Sprite("Sprites/Ground.png", 44, 44)
         self.initial_x = x
         self.initial_y = y
