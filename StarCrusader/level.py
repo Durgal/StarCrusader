@@ -23,7 +23,6 @@ from hero import Hero
 from pirate import Pirate
 from item import Fuel
 from ground import Ground
-from laser import Laser
 
 
 # Constants
@@ -84,7 +83,7 @@ class Planet(Level):
         self.background = pygame.image.load("Sprites/Planet.png").convert_alpha()
         self.stars = Star(self.screen)
         self.ground = Ground(450, 698)
-        self.laser = pygame.sprite.Group()
+        self.laser_list = pygame.sprite.Group()
 
         # test entity creation
         self.entity_list = pygame.sprite.Group()
@@ -109,13 +108,7 @@ class Planet(Level):
             self.player.jump()
 
         if pygame.key.get_pressed()[pygame.K_SPACE] != 0 and self.player.center_y:
-            self.player.shoot(self.player.direction)
-            time = pygame.time.get_ticks()
-            if time - self.player.laser_timer >= self.player.laser_cooldown:
-                self.player.laser_timer = time
-                laser = Laser(self.player.get_x(),self.player.get_y())
-                self.laser.add(laser)
-                laser.set_direction(self.player.direction)
+            self.player.shoot(self.player.direction, self.laser_list)
 
         if pygame.key.get_pressed()[pygame.K_F3]:
             if self.DEBUG:
@@ -127,7 +120,7 @@ class Planet(Level):
         """ Update all entities on the Planet -- collisions, rotation, gravity etc """
         self.time += 1                                      # increment time
         self.player.update(self.entity_list, self.ground)   # update player
-        self.rotate_planet(self.laser)                      # rotate laser instances
+        self.rotate_planet(self.laser_list)                      # rotate laser instances
         self.rotate_planet(self.entity_list)                # rotate entities with speed
 
         # animate entities and check for collision
@@ -150,7 +143,7 @@ class Planet(Level):
         """ Draw background and all entities on Planet """
         self.stars.draw_stars(self.screen, self.player.move_speed)
         self.draw(self.screen)
-        self.laser.draw(self.screen)
+        self.laser_list.draw(self.screen)
         self.screen.blit(self.player.image, self.player.get_pos())
         self.entity_list.draw(self.screen)
         self.hud.draw_hud(self.screen)

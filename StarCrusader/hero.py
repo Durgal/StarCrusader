@@ -14,6 +14,7 @@
 import pygame
 
 from Utilities.sprite_functions import Sprite
+from laser import Laser
 from Utilities.audio_functions import Audio
 
 STARTING_POS_X = 450
@@ -83,12 +84,19 @@ class Hero(pygame.sprite.Sprite):
         else:
             self.move_speed = PLAYER_SPEED
 
-    def shoot(self, direction):
+    def shoot(self, direction, laser_list):
         if self.move_speed == 0:
             if direction == "R":
                 self.image = self.sprite_shoot_r.get_image(0, 0)
             else:
                 self.image = self.sprite_shoot_l.get_image(0, 0)
+
+        time = pygame.time.get_ticks()
+        if time - self.laser_timer >= self.laser_cooldown:
+            self.laser_timer = time
+            laser = Laser(self.get_x(), self.get_y())
+            laser_list.add(laser)
+            laser.set_direction(self.direction)
 
     def jump(self):
         if self.on_ground == True:
