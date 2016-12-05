@@ -21,7 +21,7 @@ from star_field import Star
 from ship_landed import Ship_Landed
 from hero import Hero
 from pirate import Pirate
-from item import Fuel
+from item import *
 from ground import Ground
 
 
@@ -87,7 +87,9 @@ class Planet(Level):
 
         # test entity creation
         self.entity_list = pygame.sprite.Group()
-        self.entity_list.add(Fuel(700, 700))
+        self.entity_list.add(Fuel(700, 695))
+        self.entity_list.add(Health(600, 675))
+        self.entity_list.add(Energy(500, 665))
         self.entity_list.add(Pirate(700, 690))
         self.ship = Ship_Landed(450,580)
 
@@ -120,10 +122,10 @@ class Planet(Level):
         """ Update all entities on the Planet -- collisions, rotation, gravity etc """
         self.time += 1                                      # increment time
         self.player.update(self.entity_list, self.ground)   # update player
-        self.rotate_planet(self.laser_list)                      # rotate laser instances
+        self.rotate_planet(self.laser_list)                 # rotate laser instances
         self.rotate_planet(self.entity_list)                # rotate entities with speed
 
-        # animate entities and check for collision
+        # animate entities and check for collisions
         for object in self.entity_list:
             self.player.collision_check(object)
             if object.type == "enemy":
