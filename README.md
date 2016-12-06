@@ -51,9 +51,9 @@ Provide as much of the following information as possible:
 
 
 
- Contact the Contributors
- ------------------------
- In order to contact the contributors you may use either the contributors' joint email, starcrusader.game@gmail.com
+Contact the Contributors
+------------------------
+In order to contact the contributors you may use the contributors' joint email, starcrusader.game@gmail.com
  
  
  
