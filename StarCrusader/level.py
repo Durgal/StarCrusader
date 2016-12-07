@@ -87,9 +87,9 @@ class Planet(Level):
 
         # test entity creation
         self.entity_list = pygame.sprite.Group()
-        #self.entity_list.add(Fuel(700, 695))
-        #self.entity_list.add(Health(600, 675))
-        #self.entity_list.add(Energy(500, 665))
+        self.entity_list.add(Fuel(700, 695))
+        self.entity_list.add(Energy(600, 675))
+        self.entity_list.add(Energy(500, 665))
         self.entity_list.add(Pirate(700, 690))
         #self.ship = Ship_Landed(450,580)
 

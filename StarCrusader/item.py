@@ -62,7 +62,7 @@ class Energy(Item):
     def __init__(self, x, y):
 
         super().__init__(x, y)
-        self.sub_type = "treasure"
+        self.sub_type = "energy"
         self.sprite = Sprite("Sprites/Item_Energy.png", 36, 36)
         self.image = self.sprite.get_image(0, 0)
 

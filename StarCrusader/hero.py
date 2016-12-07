@@ -151,3 +151,15 @@ class Hero(pygame.sprite.Sprite):
             object.kill()
             #self.snd_item.play()
 
+            if object.sub_type == "fuel":
+                self.fuel += 5
+
+            if object.sub_type == "energy":
+                self.energy += 5
+
+            if object.sub_type == "health":
+                self.health += 5
+
+            if object.sub_type == "treasure":
+                self.treasure += 5
+
