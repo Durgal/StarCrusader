@@ -94,10 +94,9 @@ class Planet(Level):
         #self.entity_list.add(Pirate(700, 690))
         self.entity_list.add(Ship_Landed(150,650))
 
+        # Initialize pirate spawners
         self.spawner_one = Pirate_Spawner(-10, 780,"R")
         self.spawner_two = Pirate_Spawner(915, 780, "L")
-        self.spawner_one.create(self.entity_list)
-        self.spawner_two.create(self.entity_list)
 
     def get_input(self):
         """ Input Function for Planet Level """
@@ -130,6 +129,9 @@ class Planet(Level):
         self.player.update(self.entity_list, self.ground)   # update player
         self.rotate_planet(self.laser_list)                 # rotate laser instances
         self.rotate_planet(self.entity_list)                # rotate entities with speed
+
+        self.spawner_one.update(self.entity_list)
+        self.spawner_two.update(self.entity_list)
 
         # update HUD
         self.hud.update(self.player.fuel, self.player.health, self.player.energy, self.player.treasure)

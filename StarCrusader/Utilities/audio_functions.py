@@ -20,8 +20,7 @@ class Audio():
         self.audio = pygame.mixer.Sound(file)
 
     def play(self):
-        if not pygame.mixer.get_busy():
-            self.audio.play()
+        self.audio.play()
 
     def stop(self):
         self.audio.stop()
