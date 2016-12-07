@@ -20,7 +20,7 @@ class Ship_Landed(pygame.sprite.Sprite):
 
         super().__init__()
         self.type = "ship"
-        self.sprite = Sprite("Sprites/Spaceship_Planet.png", 185, 270)
+        self.sprite = Sprite("Sprites/Spaceship_Planet.png", 270, 270)
         self.initial_x = x
         self.initial_y = y
         self.speed = 0
@@ -34,5 +34,14 @@ class Ship_Landed(pygame.sprite.Sprite):
         self.rect.x = self.center_x
         self.rect.y = self.center_y
 
+        self.orig_center = self.rect.center
+        self.orig_img = self.image
+        self.rotation = 0
+
     def get_pos(self):
         return(self.rect.x,self.rect.y)
+
+    def rotate(self, angle):
+        self.rotation = angle
+        self.image = pygame.transform.rotate(self.orig_img, self.rotation)
+        self.rect = self.image.get_rect(center=self.rect.center)

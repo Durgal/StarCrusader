@@ -20,7 +20,7 @@ from spaceship import Camera
 from star_field import Star
 from ship_landed import Ship_Landed
 from hero import Hero
-from pirate import Pirate
+from pirate import *
 from item import *
 from ground import Ground
 
@@ -77,9 +77,10 @@ class Planet(Level):
     def __init__(self, screen):
         player = Hero()
         Level.__init__(self, player)
-        self.DEBUG = True
+        self.DEBUG = False
         self.screen = screen
         self.time = 0
+        self.planet_angle = 0
         self.background = pygame.image.load("Sprites/Planet.png").convert_alpha()
         self.stars = Star(self.screen)
         self.ground = Ground(450, 698)
@@ -88,10 +89,14 @@ class Planet(Level):
         # test entity creation
         self.entity_list = pygame.sprite.Group()
         self.entity_list.add(Fuel(700, 695))
-        self.entity_list.add(Health(600, 675))
+        self.entity_list.add(Energy(600, 675))
         self.entity_list.add(Energy(500, 665))
-        self.entity_list.add(Pirate(700, 690))
-        self.ship = Ship_Landed(450,580)
+        #self.entity_list.add(Pirate(700, 690))
+        self.entity_list.add(Ship_Landed(150,650))
+
+        # Initialize pirate spawners
+        self.spawner_one = Pirate_Spawner(-10, 780,"R")
+        self.spawner_two = Pirate_Spawner(915, 780, "L")
 
     def get_input(self):
         """ Input Function for Planet Level """
@@ -125,14 +130,23 @@ class Planet(Level):
         self.rotate_planet(self.laser_list)                 # rotate laser instances
         self.rotate_planet(self.entity_list)                # rotate entities with speed
 
+        self.spawner_one.update(self.entity_list)
+        self.spawner_two.update(self.entity_list)
+
+        # update HUD
+        self.hud.update(self.player.fuel, self.player.health, self.player.energy, self.player.treasure)
+
         # animate entities and check for collisions
         for object in self.entity_list:
             self.player.collision_check(object)
-            if object.type == "enemy":
+            if object.type == "enemy":  # animate / collision enemies
                 object.animate(self.time, object.direction)
+                object.collision_check(self.laser_list)
+            if object.type == "ship":   # rotate spaceship
+                object.rotate(1)
 
     def rotate_planet(self, entity_list):
-        """ Rotates an entity right around a given sized circle """
+        """ Rotates an entity around a given sized circle """
         for object in entity_list:
             object.rect.x = CENTER_X + (object.center_x - (CENTER_X)) * math.cos(object.angle) - (object.center_y - (CENTER_Y)) * math.sin(object.angle)
             object.rect.y = CENTER_Y + (object.center_x - (CENTER_X)) * math.sin(object.angle) + (object.center_y - (CENTER_Y)) * math.cos(object.angle)

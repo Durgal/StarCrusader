@@ -48,9 +48,9 @@ class Hero(pygame.sprite.Sprite):
         self.move_speed = 0
         self.direction = "R"
 
-        self.fuel = 0
-        self.health = 0
-        self.energy = 0
+        self.fuel = 100
+        self.health = 100
+        self.energy = 100
         self.treasure = 0
 
         self.image = self.sprite.get_image(0, 0)
@@ -97,7 +97,8 @@ class Hero(pygame.sprite.Sprite):
 
         # create pulse for lasers
         time = pygame.time.get_ticks()
-        if time - self.laser_timer >= self.laser_cooldown:
+        if time - self.laser_timer >= self.laser_cooldown and self.energy > 0:
+            self.energy -= 2
             self.laser_timer = time
             laser = Laser(self.get_x(), self.get_y())
             laser.set_direction(self.direction)
@@ -106,8 +107,9 @@ class Hero(pygame.sprite.Sprite):
 
     def jump(self):
         if self.on_ground == True:
-            self.snd_jump.play()
-            self.velocity = 6
+            if self.velocity == 0:
+                self.snd_jump.play()
+                self.velocity = 6
 
     def stop(self ,time):
         self.move_speed = 0
@@ -150,3 +152,18 @@ class Hero(pygame.sprite.Sprite):
             object.kill()
             self.snd_item.play()
 
+            if object.sub_type == "fuel":
+                self.fuel += 5
+
+            if object.sub_type == "energy":
+                self.energy += 5
+
+            if object.sub_type == "health":
+                self.health += 5
+
+            if object.sub_type == "treasure":
+                self.treasure += 5
+
+        if self.collision_entity == "enemy":
+            object.kill()
+            self.health -= 20

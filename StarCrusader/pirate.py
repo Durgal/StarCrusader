@@ -40,11 +40,45 @@ class Pirate(pygame.sprite.Sprite):
         return(self.rect.x,self.rect.y)
 
     def animate(self, time, direction):
-        old_direction = self.direction
-
-        if old_direction != direction:
-            self.sprite.flip_image()
-
         self.image = self.sprite.get_image(0, 0)
         self.sprite.animate(time)
         self.direction = direction
+
+    def change_direction(self):
+        if self.direction == "R":
+            self.direction = "L"
+            self.speed = -.0005
+        else:
+            self.direction = "R"
+            self.speed = .0005
+
+        self.sprite.flip_image()
+
+    def collision_check(self, laser_list):
+        for laser in laser_list:
+            if self.sprite.get_collision(self.rect.x, self.rect.y, self.sprite.width, self.sprite.height, laser.rect.x, laser.rect.y, laser.sprite.width, laser.sprite.height):
+                laser.kill()
+                self.kill()
+
+
+class Pirate_Spawner:
+
+    def __init__(self,x,y,direction):
+        self.initial_x = x
+        self.initial_y = y
+        self.direction = direction
+        self.spawn_rate = 5000
+        self.spawn_timer = 0
+
+    def create(self, entity_list):
+            pirate = Pirate(self.initial_x, self.initial_y)
+            entity_list.add(pirate)
+
+            if self.direction == "L":
+                pirate.change_direction()
+
+    def update(self, entity_list):
+        time = pygame.time.get_ticks()
+        if time - self.spawn_timer >= self.spawn_rate:
+            self.spawn_timer = time
+            self.create(entity_list)
