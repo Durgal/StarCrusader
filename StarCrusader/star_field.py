@@ -13,6 +13,7 @@
 from random import randrange, choice
 
 STAR_MAX = 25
+OFFSET = 5
 
 
 class Star():
@@ -30,13 +31,13 @@ class Star():
     def draw_stars(self, screen, speed):
         "Draw star field"
         for star in self.stars:
-            star[0] += star[2]*speed*100
-            if star[0] >= screen.get_width():   # For travelling right
-                star[0] = 0
+            star[0] += star[2]*speed*100+.01
+            if star[0] >= screen.get_width()+OFFSET:   # For travelling right
+                star[0] = -OFFSET
                 star[1] = randrange(0,screen.get_width())
                 star[2] = choice([1,2,3])
-            elif star[0] <= 0:                  # For travelling left
-                star[0] = screen.get_width()
+            elif star[0] <= -OFFSET:                  # For travelling left
+                star[0] = screen.get_width()+OFFSET
                 star[1] = randrange(0,screen.get_width())
                 star[2] = choice([1,2,3])
 

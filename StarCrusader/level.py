@@ -18,11 +18,11 @@ from asteroid import Asteroid
 from spaceship import Spaceship
 from spaceship import Camera
 from star_field import Star
+from ship_landed import Ship_Landed
 from hero import Hero
 from pirate import Pirate
-from item import Fuel
+from item import *
 from ground import Ground
-from laser import Laser
 
 
 # Constants
@@ -61,7 +61,6 @@ class Level:
     """ Parent class of Universe and Planet """
     def __init__(self, player):
         self.background = None
-        self.type = None
         self.player = player
         self.hud = Hud()
 
@@ -78,20 +77,21 @@ class Planet(Level):
     def __init__(self, screen):
         player = Hero()
         Level.__init__(self, player)
+        self.DEBUG = True
         self.screen = screen
-        self.background = pygame.image.load("Sprites/Planet.png").convert_alpha()
-        self.planet_angle = 0
         self.time = 0
+        self.background = pygame.image.load("Sprites/Planet.png").convert_alpha()
         self.stars = Star(self.screen)
         self.ground = Ground(450, 698)
+        self.laser_list = pygame.sprite.Group()
 
         # test entity creation
         self.entity_list = pygame.sprite.Group()
-        self.entity_list.add(Fuel(700, 700))
+        self.entity_list.add(Fuel(700, 695))
+        self.entity_list.add(Health(600, 675))
+        self.entity_list.add(Energy(500, 665))
         self.entity_list.add(Pirate(700, 690))
-
-        self.laser = pygame.sprite.Group()
-
+        self.ship = Ship_Landed(450,580)
 
     def get_input(self):
         """ Input Function for Planet Level """
@@ -110,20 +110,24 @@ class Planet(Level):
             self.player.jump()
 
         if pygame.key.get_pressed()[pygame.K_SPACE] != 0 and self.player.center_y:
-            self.player.shoot(self.player.direction)
-            laser = Laser(self.player.get_x(),self.player.get_y())
-            self.laser.add(laser)
-            laser.set_direction(self.player.direction)
+            self.player.shoot(self.player.direction, self.laser_list)
 
+        if pygame.key.get_pressed()[pygame.K_F3]:
+            if self.DEBUG:
+                self.DEBUG = False
+            else:
+                self.DEBUG = True
 
     def update(self):
         """ Update all entities on the Planet -- collisions, rotation, gravity etc """
         self.time += 1                                      # increment time
         self.player.update(self.entity_list, self.ground)   # update player
-        self.rotate_planet(self.laser)                      # rotate laser instances
+        self.rotate_planet(self.laser_list)                 # rotate laser instances
         self.rotate_planet(self.entity_list)                # rotate entities with speed
 
+        # animate entities and check for collisions
         for object in self.entity_list:
+            self.player.collision_check(object)
             if object.type == "enemy":
                 object.animate(self.time, object.direction)
 
@@ -133,7 +137,6 @@ class Planet(Level):
             object.rect.x = CENTER_X + (object.center_x - (CENTER_X)) * math.cos(object.angle) - (object.center_y - (CENTER_Y)) * math.sin(object.angle)
             object.rect.y = CENTER_Y + (object.center_x - (CENTER_X)) * math.sin(object.angle) + (object.center_y - (CENTER_Y)) * math.cos(object.angle)
             object.angle += self.player.move_speed+object.speed
-            self.planet_angle = object.angle
 
     def set_dt(self, dt):
         pass
@@ -142,26 +145,27 @@ class Planet(Level):
         """ Draw background and all entities on Planet """
         self.stars.draw_stars(self.screen, self.player.move_speed)
         self.draw(self.screen)
-        self.laser.draw(self.screen)
+        self.laser_list.draw(self.screen)
         self.screen.blit(self.player.image, self.player.get_pos())
         self.entity_list.draw(self.screen)
         self.hud.draw_hud(self.screen)
 
         """ For Debug """
-        if pygame.font:
-            font = pygame.font.Font("courbd.ttf", 12)
+        if self.DEBUG:
+            if pygame.font:
+                font = pygame.font.Font("courbd.ttf", 12)
 
-            cur_fps = font.render('Fps: ' + str(fps), 1, (255, 255, 255))
-            cur_f = font.render('F: ' + str(self.player.falling), 1, (255, 255, 255))
-            cur_g = font.render('G: ' + str(self.player.on_ground), 1, (255, 255, 255))
-            cur_d = font.render('D: ' + str(self.player.direction), 1, (255, 255, 255))
-            cur_v = font.render('V: ' + str(self.player.velocity), 1, (255, 255, 255))
+                cur_fps = font.render('Fps: ' + str(fps), 1, (255, 255, 255))
+                cur_e = font.render('E: ' + str(self.player.collision_entity), 1, (255, 255, 255))
+                cur_g = font.render('G: ' + str(self.player.on_ground), 1, (255, 255, 255))
+                cur_d = font.render('D: ' + str(self.player.direction), 1, (255, 255, 255))
+                cur_v = font.render('V: ' + str(self.player.velocity), 1, (255, 255, 255))
 
-            self.screen.blit(cur_fps, (5, 820))
-            self.screen.blit(cur_f, (5, 835))
-            self.screen.blit(cur_g, (5, 850))
-            self.screen.blit(cur_d, (5, 865))
-            self.screen.blit(cur_v, (5,880))
+                self.screen.blit(cur_fps, (5, 820))
+                self.screen.blit(cur_e, (5, 835))
+                self.screen.blit(cur_g, (5, 850))
+                self.screen.blit(cur_d, (5, 865))
+                self.screen.blit(cur_v, (5,880))
 
 
 class Universe(Level):

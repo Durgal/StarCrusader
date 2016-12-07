@@ -1,5 +1,4 @@
 # Star Crusader
- -------------
   
  Star Crusader is an Asteroid style game built in python 3.0 using pygame. The goal is to collect as much treasure as you can without 
  running out of fuel or dying. Upon starting the game, asteroids and planets will randomly generate around the player. The player must 
@@ -52,10 +51,9 @@ Provide as much of the following information as possible:
 
 
 
- Contact the Contributors
- ------------------------
- In order to contact the contributors you may use either the contributors' joint email, starcrusader.game@gmail.com, or via their 
- individual emails as listed below.
+Contact the Contributors
+------------------------
+In order to contact the contributors you may use the contributors' joint email, starcrusader.game@gmail.com
  
  
  
