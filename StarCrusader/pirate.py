@@ -48,3 +48,14 @@ class Pirate(pygame.sprite.Sprite):
         self.image = self.sprite.get_image(0, 0)
         self.sprite.animate(time)
         self.direction = direction
+
+
+class Pirate_Spawner:
+
+    def __init__(self,x,y,direction):
+        self.initial_x = x
+        self.initial_y = y
+        self.direction = direction
+
+    def create(self, entity_list):
+        entity_list.add(Pirate(self.initial_x,self.initial_y))

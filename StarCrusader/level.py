@@ -20,7 +20,7 @@ from spaceship import Camera
 from star_field import Star
 from ship_landed import Ship_Landed
 from hero import Hero
-from pirate import Pirate
+from pirate import *
 from item import *
 from ground import Ground
 
@@ -77,7 +77,7 @@ class Planet(Level):
     def __init__(self, screen):
         player = Hero()
         Level.__init__(self, player)
-        self.DEBUG = True
+        self.DEBUG = False
         self.screen = screen
         self.time = 0
         self.planet_angle = 0
@@ -91,8 +91,13 @@ class Planet(Level):
         self.entity_list.add(Fuel(700, 695))
         self.entity_list.add(Energy(600, 675))
         self.entity_list.add(Energy(500, 665))
-        self.entity_list.add(Pirate(700, 690))
+        #self.entity_list.add(Pirate(700, 690))
         self.entity_list.add(Ship_Landed(150,650))
+
+        self.spawner_one = Pirate_Spawner(-10, 780,"R")
+        self.spawner_two = Pirate_Spawner(915, 780, "L")
+        self.spawner_one.create(self.entity_list)
+        self.spawner_two.create(self.entity_list)
 
     def get_input(self):
         """ Input Function for Planet Level """
@@ -134,8 +139,8 @@ class Planet(Level):
             self.player.collision_check(object)
             if object.type == "enemy":  # animate / collision enemies
                 object.animate(self.time, object.direction)
-            if object.type == "ship":   # rotate spaceship
-                object.rotate(self.planet_angle)
+            #if object.type == "ship":   # rotate spaceship
+            #    object.rotate(self.planet_angle)
 
     def rotate_planet(self, entity_list):
         """ Rotates an entity around a given sized circle """
