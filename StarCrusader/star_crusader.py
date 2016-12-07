@@ -36,10 +36,7 @@ def main():
     pygame.display.set_caption("Star Crusader")
 
     # Set current level (Universe)
-    #current_level = level.Universe(screen)
-
-    # Set current level (Planet)
-    current_level = level.Planet(screen)
+    current_level = level.Universe(screen)
 
     # Clock manages how fast updates occur
     clock = pygame.time.Clock()

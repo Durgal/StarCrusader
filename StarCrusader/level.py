@@ -10,20 +10,19 @@
 #               functionality
 #########################################
 
-import pygame
-import random
 import math
-from hud import Hud
-from asteroid import Asteroid
-from spaceship import Spaceship
-from spaceship import Camera
-from star_field import Star
-from ship_landed import Ship_Landed
-from hero import Hero
-from pirate import *
-from item import *
-from ground import Ground
+import random
 
+from Planet.ground import Ground
+from Planet.hero import Hero
+from Planet.pirate import *
+from Planet.ship_landed import Ship_Landed
+from Planet.star_field import Star
+from Universe.asteroid import Asteroid
+from Universe.spaceship import Camera
+from Universe.spaceship import Spaceship
+from hud import Hud
+from item import *
 
 # Constants
 RED = (255, 0, 0)
@@ -61,7 +60,6 @@ class Level:
     """ Parent class of Universe and Planet """
     def __init__(self, player):
         self.level_type = "none"
-        self.change_level = "none"
         self.background = None
         self.player = player
         self.hud = Hud()
@@ -71,10 +69,10 @@ class Level:
             screen.blit(self.background, (0,0))
 
     def change(self, type):
-        self.change_level = type
+        self.level_type = type
 
     def get_type(self):
-        return self.change_level
+        return self.level_type
 
 
 class Planet(Level):
@@ -82,7 +80,6 @@ class Planet(Level):
     def __init__(self, screen):
         player = Hero()
         Level.__init__(self, player)
-        self.level_type = "planet"
         self.DEBUG = False
         self.screen = screen
         self.time = 0
@@ -201,7 +198,6 @@ class Universe(Level):
         self.spaceship = Spaceship(self.spaceship_group, self.laser_group)
         self.screen = screen
         Level.__init__(self, self.spaceship)
-        self.level_type = "universe"
         self.asteroid_image_set = []
         self.asteroid_damage_set = []
         self.load_asteroid_data()
