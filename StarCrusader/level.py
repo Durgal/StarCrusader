@@ -80,6 +80,7 @@ class Planet(Level):
         self.DEBUG = True
         self.screen = screen
         self.time = 0
+        self.planet_angle = 0
         self.background = pygame.image.load("Sprites/Planet.png").convert_alpha()
         self.stars = Star(self.screen)
         self.ground = Ground(450, 698)
@@ -91,7 +92,7 @@ class Planet(Level):
         self.entity_list.add(Energy(600, 675))
         self.entity_list.add(Energy(500, 665))
         self.entity_list.add(Pirate(700, 690))
-        #self.ship = Ship_Landed(450,580)
+        self.entity_list.add(Ship_Landed(450,580))
 
     def get_input(self):
         """ Input Function for Planet Level """
@@ -131,8 +132,10 @@ class Planet(Level):
         # animate entities and check for collisions
         for object in self.entity_list:
             self.player.collision_check(object)
-            if object.type == "enemy":
+            if object.type == "enemy":  # animate enemies
                 object.animate(self.time, object.direction)
+            if object.type == "ship":   # rotate spaceship
+                object.rotate(self.planet_angle)
 
     def rotate_planet(self, entity_list):
         """ Rotates an entity right around a given sized circle """
