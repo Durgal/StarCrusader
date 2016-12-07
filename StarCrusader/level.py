@@ -139,8 +139,9 @@ class Planet(Level):
             self.player.collision_check(object)
             if object.type == "enemy":  # animate / collision enemies
                 object.animate(self.time, object.direction)
-            #if object.type == "ship":   # rotate spaceship
-            #    object.rotate(self.planet_angle)
+                object.collision_check(self.laser_list)
+            if object.type == "ship":   # rotate spaceship
+                object.rotate(1)
 
     def rotate_planet(self, entity_list):
         """ Rotates an entity around a given sized circle """
