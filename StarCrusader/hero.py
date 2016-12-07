@@ -163,3 +163,6 @@ class Hero(pygame.sprite.Sprite):
             if object.sub_type == "treasure":
                 self.treasure += 5
 
+        if self.collision_entity == "enemy":
+            object.kill()
+            self.health -= 20

@@ -92,7 +92,7 @@ class Planet(Level):
         self.entity_list.add(Energy(600, 675))
         self.entity_list.add(Energy(500, 665))
         self.entity_list.add(Pirate(700, 690))
-        self.entity_list.add(Ship_Landed(450,580))
+        self.entity_list.add(Ship_Landed(150,650))
 
     def get_input(self):
         """ Input Function for Planet Level """
@@ -132,13 +132,13 @@ class Planet(Level):
         # animate entities and check for collisions
         for object in self.entity_list:
             self.player.collision_check(object)
-            if object.type == "enemy":  # animate enemies
+            if object.type == "enemy":  # animate / collision enemies
                 object.animate(self.time, object.direction)
             if object.type == "ship":   # rotate spaceship
                 object.rotate(self.planet_angle)
 
     def rotate_planet(self, entity_list):
-        """ Rotates an entity right around a given sized circle """
+        """ Rotates an entity around a given sized circle """
         for object in entity_list:
             object.rect.x = CENTER_X + (object.center_x - (CENTER_X)) * math.cos(object.angle) - (object.center_y - (CENTER_Y)) * math.sin(object.angle)
             object.rect.y = CENTER_Y + (object.center_x - (CENTER_X)) * math.sin(object.angle) + (object.center_y - (CENTER_Y)) * math.cos(object.angle)
