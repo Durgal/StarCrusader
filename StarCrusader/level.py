@@ -87,11 +87,11 @@ class Planet(Level):
 
         # test entity creation
         self.entity_list = pygame.sprite.Group()
-        self.entity_list.add(Fuel(700, 695))
-        self.entity_list.add(Health(600, 675))
-        self.entity_list.add(Energy(500, 665))
+        #self.entity_list.add(Fuel(700, 695))
+        #self.entity_list.add(Health(600, 675))
+        #self.entity_list.add(Energy(500, 665))
         self.entity_list.add(Pirate(700, 690))
-        self.ship = Ship_Landed(450,580)
+        #self.ship = Ship_Landed(450,580)
 
     def get_input(self):
         """ Input Function for Planet Level """
@@ -124,6 +124,9 @@ class Planet(Level):
         self.player.update(self.entity_list, self.ground)   # update player
         self.rotate_planet(self.laser_list)                 # rotate laser instances
         self.rotate_planet(self.entity_list)                # rotate entities with speed
+
+        # update HUD
+        self.hud.update(self.player.fuel, self.player.health, self.player.energy, self.player.treasure)
 
         # animate entities and check for collisions
         for object in self.entity_list:

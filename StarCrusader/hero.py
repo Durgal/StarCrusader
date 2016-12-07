@@ -48,9 +48,9 @@ class Hero(pygame.sprite.Sprite):
         self.move_speed = 0
         self.direction = "R"
 
-        self.fuel = 0
-        self.health = 0
-        self.energy = 0
+        self.fuel = 100
+        self.health = 100
+        self.energy = 100
         self.treasure = 0
 
         self.image = self.sprite.get_image(0, 0)
@@ -60,9 +60,9 @@ class Hero(pygame.sprite.Sprite):
         self.rect.x = self.center_x
         self.rect.y = self.center_y
 
-        self.snd_jump = Audio(snd_jump)
-        self.snd_item = Audio(snd_item)
-        self.snd_laser = Audio(snd_laser)
+        #self.snd_jump = Audio(snd_jump)
+        #self.snd_item = Audio(snd_item)
+        #self.snd_laser = Audio(snd_laser)
 
     def get_pos(self):
         return(self.rect.x,self.rect.y)
@@ -97,16 +97,17 @@ class Hero(pygame.sprite.Sprite):
 
         # create pulse for lasers
         time = pygame.time.get_ticks()
-        if time - self.laser_timer >= self.laser_cooldown:
+        if time - self.laser_timer >= self.laser_cooldown and self.energy > 0:
+            self.energy -= 2
             self.laser_timer = time
             laser = Laser(self.get_x(), self.get_y())
             laser.set_direction(self.direction)
             laser_list.add(laser)
-            self.snd_laser.play()
+            #self.snd_laser.play()
 
     def jump(self):
         if self.on_ground == True:
-            self.snd_jump.play()
+            #self.snd_jump.play()
             self.velocity = 6
 
     def stop(self ,time):
@@ -148,5 +149,5 @@ class Hero(pygame.sprite.Sprite):
 
         if self.collision_entity == "item":
             object.kill()
-            self.snd_item.play()
+            #self.snd_item.play()
 
