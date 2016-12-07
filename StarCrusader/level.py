@@ -60,6 +60,8 @@ CENTER_Y = 1550
 class Level:
     """ Parent class of Universe and Planet """
     def __init__(self, player):
+        self.level_type = "none"
+        self.change_level = "none"
         self.background = None
         self.player = player
         self.hud = Hud()
@@ -68,8 +70,11 @@ class Level:
         if self.background:
             screen.blit(self.background, (0,0))
 
+    def change(self, type):
+        self.change_level = type
+
     def get_type(self):
-        return self.type
+        return self.change_level
 
 
 class Planet(Level):
@@ -77,6 +82,7 @@ class Planet(Level):
     def __init__(self, screen):
         player = Hero()
         Level.__init__(self, player)
+        self.level_type = "planet"
         self.DEBUG = False
         self.screen = screen
         self.time = 0
@@ -91,7 +97,6 @@ class Planet(Level):
         self.entity_list.add(Fuel(700, 695))
         self.entity_list.add(Energy(600, 675))
         self.entity_list.add(Energy(500, 665))
-        #self.entity_list.add(Pirate(700, 690))
         self.entity_list.add(Ship_Landed(150,650))
 
         # Initialize pirate spawners
@@ -123,6 +128,10 @@ class Planet(Level):
             else:
                 self.DEBUG = True
 
+        # Switch level test
+        if pygame.key.get_pressed()[pygame.K_m]:
+            self.change("universe")
+
     def update(self):
         """ Update all entities on the Planet -- collisions, rotation, gravity etc """
         self.time += 1                                      # increment time
@@ -130,6 +139,7 @@ class Planet(Level):
         self.rotate_planet(self.laser_list)                 # rotate laser instances
         self.rotate_planet(self.entity_list)                # rotate entities with speed
 
+        # periodically spawn space pirates
         self.spawner_one.update(self.entity_list)
         self.spawner_two.update(self.entity_list)
 
@@ -142,7 +152,7 @@ class Planet(Level):
             if object.type == "enemy":  # animate / collision enemies
                 object.animate(self.time, object.direction)
                 object.collision_check(self.laser_list)
-            if object.type == "ship":   # rotate spaceship
+            if object.type == "ship":   # rotate spaceship TODO: get this to work
                 object.rotate(1)
 
     def rotate_planet(self, entity_list):
@@ -191,6 +201,7 @@ class Universe(Level):
         self.spaceship = Spaceship(self.spaceship_group, self.laser_group)
         self.screen = screen
         Level.__init__(self, self.spaceship)
+        self.level_type = "universe"
         self.asteroid_image_set = []
         self.asteroid_damage_set = []
         self.load_asteroid_data()
@@ -212,6 +223,10 @@ class Universe(Level):
             self.spaceship.get_event('rotate_r')
         if pygame.key.get_pressed()[pygame.K_SPACE] != 0:
             self.spaceship.shoot_laser()
+
+        # Switch level test
+        if pygame.key.get_pressed()[pygame.K_m]:
+            self.change("planet")
 
     def generate_asteroid(self, sprite_group, lower_x, upper_x, lower_y, upper_y):
         random_asteroid = random.randint(0, 5)

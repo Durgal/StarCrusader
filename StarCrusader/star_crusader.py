@@ -53,6 +53,12 @@ def main():
             if event.type == QUIT:
                 loop = False
 
+        # Check for level change
+        if current_level.get_type() == "universe":
+            current_level = level.Universe(screen)
+        if current_level.get_type() == "planet":
+            current_level = level.Planet(screen)
+
         # Limit to 60 FPS
         milliseconds = clock.tick(FPS)
 
@@ -66,6 +72,7 @@ def main():
         # Update each sprite groups and current level
         current_level.update()
 
+        # Render level
         screen.fill(BLACK)
         current_level.render_level(clock.get_fps())
 
