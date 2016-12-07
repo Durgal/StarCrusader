@@ -13,17 +13,16 @@
 
 import pygame
 
+from Planet.laser import Laser
 from Utilities.sprite_functions import Sprite
-from laser import Laser
-from Utilities.audio_functions import Audio
 
 STARTING_POS_X = 450
 STARTING_POS_Y = 655
 
 #Audio
-snd_jump = "Audio/jump.wav"
-snd_item = "Audio/item.wav"
-snd_laser = "Audio/laser.wav"
+snd_jump = "../Audio/jump.wav"
+snd_item = "../Audio/item.wav"
+snd_laser = "../Audio/laser.wav"
 
 PLAYER_SPEED = .0015
 
