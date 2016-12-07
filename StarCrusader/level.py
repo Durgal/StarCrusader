@@ -125,10 +125,6 @@ class Planet(Level):
             else:
                 self.DEBUG = True
 
-        # Switch level test
-        if pygame.key.get_pressed()[pygame.K_m]:
-            self.change("universe")
-
     def update(self):
         """ Update all entities on the Planet -- collisions, rotation, gravity etc """
         self.time += 1                                      # increment time
@@ -146,11 +142,12 @@ class Planet(Level):
         # animate entities and check for collisions
         for object in self.entity_list:
             self.player.collision_check(object)
-            if object.type == "enemy":  # animate / collision enemies
+            if object.type == "enemy":                  # animate / collision enemies
                 object.animate(self.time, object.direction)
                 object.collision_check(self.laser_list)
-            if object.type == "ship":   # rotate spaceship TODO: get this to work
-                object.rotate(1)
+            if object.type == "ship":
+                self.change(self.player.get_level())    # check collision with player
+                #object.rotate(30)                      # rotate spaceship TODO: get this to work
 
     def rotate_planet(self, entity_list):
         """ Rotates an entity around a given sized circle """
