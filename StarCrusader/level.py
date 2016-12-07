@@ -18,11 +18,11 @@ from Planet.hero import Hero
 from Planet.pirate import *
 from Planet.ship_landed import Ship_Landed
 from Planet.star_field import Star
-from asteroid import Asteroid
+from Universe.asteroid import Asteroid
+from Universe.spaceship import Camera
+from Universe.spaceship import Spaceship
 from hud import Hud
 from item import *
-from spaceship import Camera
-from spaceship import Spaceship
 
 # Constants
 RED = (255, 0, 0)

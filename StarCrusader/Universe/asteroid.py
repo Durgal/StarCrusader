@@ -11,9 +11,9 @@
 #               for asteroid class
 #########################################
 
-import pygame
 import random
-from spaceship import Spaceship
+
+import pygame
 
 ASTEROID1 = 1
 ASTEROID2 = 2
