@@ -150,7 +150,7 @@ class Planet(Level):
                 object.animate(self.time, object.direction)
                 object.collision_check(self.laser_list)
             if object.type == "ship":
-                self.change(self.player.get_level())    # check collision with player
+                self.change(self.player.get_level())    # change level if collision with ship
                 #object.rotate(30)                      # rotate spaceship TODO: get this to work
 
     def rotate_planet(self, entity_list):
@@ -250,7 +250,6 @@ class Universe(Level):
 
             self.current_rendered_chunks.append(((chunk_x_coord, chunk_y_coord), chunk_sprite_group))
 
-    # TODO: Chunks seem important... lets move to separate module if time permits?
     def generate_chunk(self, chunk_x_coord, chunk_y_coord):
         chunk_already_exists = False
         chunk_sprite_group = pygame.sprite.Group()
@@ -382,6 +381,8 @@ class Universe(Level):
             self.generate_nearby_chunks()
             self.remove_far_chunks()
             self.current_rendered_chunks.sort()
+
+        self.change(self.spaceship.level)
 
     def load_asteroid_data(self):
         image1 = pygame.image.load('Sprites/asteroid1.png')

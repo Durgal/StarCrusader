@@ -50,10 +50,10 @@ class Gameplay:
 
     def save_player_data(self):
         player = self.current_level.get_player()
-        self.file.writeline(0, player.fuel)
-        self.file.writeline(1, player.health)
-        self.file.writeline(2, player.energy)
-        self.file.writeline(3, player.treasure)
+        self.file.writeline(0, round(player.fuel))
+        self.file.writeline(1, round(player.health))
+        self.file.writeline(2, round(player.energy))
+        self.file.writeline(3, round(player.treasure))
 
     def change_level(self):
         if self.current_level.get_type() == "universe":
