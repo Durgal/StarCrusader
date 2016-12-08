@@ -35,6 +35,7 @@ class Hero(pygame.sprite.Sprite):
         self.sprite_stopped = Sprite("Sprites/Hero.png", 44, 44)
         self.sprite_shoot_l = Sprite("Sprites/Hero_Shoot_L.png", 44, 44)
         self.sprite_shoot_r = Sprite("Sprites/Hero_Shoot_R.png", 44, 44)
+        self.level = "none"
         self.angle = 0
         self.velocity = 0
         self.gravity = -.25
@@ -71,6 +72,9 @@ class Hero(pygame.sprite.Sprite):
 
     def get_y(self):
         return(self.rect.y + self.image.get_size()[1] / 2)
+
+    def get_level(self):
+        return self.level
 
     def move(self, time, direction):
         old_direction = self.direction
@@ -166,3 +170,6 @@ class Hero(pygame.sprite.Sprite):
         if self.collision_entity == "enemy":
             object.kill()
             self.health -= 20
+
+        if self.collision_entity == "ship":
+            self.level = "universe"
