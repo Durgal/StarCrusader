@@ -75,12 +75,15 @@ class Level:
     def get_type(self):
         return self.level_type
 
+    def get_player(self):
+        return self.player
+
 
 class Planet(Level):
     """ Generate Planet level """
     def __init__(self, screen):
-        player = Hero()
-        Level.__init__(self, player)
+        self.player = Hero()
+        Level.__init__(self, self.player)
         self.DEBUG = False
         self.screen = screen
         self.time = 0
@@ -126,10 +129,6 @@ class Planet(Level):
             else:
                 self.DEBUG = True
 
-        # Switch level test
-        if pygame.key.get_pressed()[pygame.K_m]:
-            self.change("universe")
-
     def update(self):
         """ Update all entities on the Planet -- collisions, rotation, gravity etc """
         self.time += 1                                      # increment time
@@ -147,11 +146,12 @@ class Planet(Level):
         # animate entities and check for collisions
         for object in self.entity_list:
             self.player.collision_check(object)
-            if object.type == "enemy":  # animate / collision enemies
+            if object.type == "enemy":                  # animate / collision enemies
                 object.animate(self.time, object.direction)
                 object.collision_check(self.laser_list)
-            if object.type == "ship":   # rotate spaceship TODO: get this to work
-                object.rotate(1)
+            if object.type == "ship":
+                self.change(self.player.get_level())    # change level if collision with ship
+                #object.rotate(30)                      # rotate spaceship TODO: get this to work
 
     def rotate_planet(self, entity_list):
         """ Rotates an entity around a given sized circle """
@@ -198,6 +198,7 @@ class Universe(Level):
         self.planet_group = pygame.sprite.Group()
         self.camera = Camera(WIDTH, HEIGHT)
         self.spaceship = Spaceship(self.spaceship_group, self.laser_group)
+        self.player = self.spaceship
         self.screen = screen
         Level.__init__(self, self.spaceship)
         self.asteroid_image_set = []
@@ -249,7 +250,6 @@ class Universe(Level):
 
             self.current_rendered_chunks.append(((chunk_x_coord, chunk_y_coord), chunk_sprite_group))
 
-    # TODO: Chunks seem important... lets move to separate module if time permits?
     def generate_chunk(self, chunk_x_coord, chunk_y_coord):
         chunk_already_exists = False
         chunk_sprite_group = pygame.sprite.Group()
@@ -381,6 +381,8 @@ class Universe(Level):
             self.generate_nearby_chunks()
             self.remove_far_chunks()
             self.current_rendered_chunks.sort()
+
+        self.change(self.spaceship.level)
 
     def load_asteroid_data(self):
         image1 = pygame.image.load('Sprites/asteroid1.png')

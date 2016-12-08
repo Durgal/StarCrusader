@@ -15,14 +15,15 @@ import pygame
 
 from Planet.laser import Laser
 from Utilities.sprite_functions import Sprite
+from Utilities.audio_functions import Audio
 
 STARTING_POS_X = 450
 STARTING_POS_Y = 655
 
 #Audio
-snd_jump = "../Audio/jump.wav"
-snd_item = "../Audio/item.wav"
-snd_laser = "../Audio/laser.wav"
+snd_jump = "Audio/jump.wav"
+snd_item = "Audio/item.wav"
+snd_laser = "Audio/laser.wav"
 
 PLAYER_SPEED = .0015
 
@@ -35,6 +36,7 @@ class Hero(pygame.sprite.Sprite):
         self.sprite_stopped = Sprite("Sprites/Hero.png", 44, 44)
         self.sprite_shoot_l = Sprite("Sprites/Hero_Shoot_L.png", 44, 44)
         self.sprite_shoot_r = Sprite("Sprites/Hero_Shoot_R.png", 44, 44)
+        self.level = "none"
         self.angle = 0
         self.velocity = 0
         self.gravity = -.25
@@ -59,9 +61,9 @@ class Hero(pygame.sprite.Sprite):
         self.rect.x = self.center_x
         self.rect.y = self.center_y
 
-        #self.snd_jump = Audio(snd_jump)
-        #self.snd_item = Audio(snd_item)
-        #self.snd_laser = Audio(snd_laser)
+        self.snd_jump = Audio(snd_jump)
+        self.snd_item = Audio(snd_item)
+        self.snd_laser = Audio(snd_laser)
 
     def get_pos(self):
         return(self.rect.x,self.rect.y)
@@ -71,6 +73,9 @@ class Hero(pygame.sprite.Sprite):
 
     def get_y(self):
         return(self.rect.y + self.image.get_size()[1] / 2)
+
+    def get_level(self):
+        return self.level
 
     def move(self, time, direction):
         old_direction = self.direction
@@ -102,12 +107,12 @@ class Hero(pygame.sprite.Sprite):
             laser = Laser(self.get_x(), self.get_y())
             laser.set_direction(self.direction)
             laser_list.add(laser)
-            #self.snd_laser.play()
+            self.snd_laser.play()
 
     def jump(self):
         if self.on_ground == True:
             if self.velocity == 0:
-                #self.snd_jump.play()
+                self.snd_jump.play()
                 self.velocity = 6
 
     def stop(self ,time):
@@ -149,7 +154,7 @@ class Hero(pygame.sprite.Sprite):
 
         if self.collision_entity == "item":
             object.kill()
-            #self.snd_item.play()
+            self.snd_item.play()
 
             if object.sub_type == "fuel":
                 self.fuel += 5
@@ -166,3 +171,6 @@ class Hero(pygame.sprite.Sprite):
         if self.collision_entity == "enemy":
             object.kill()
             self.health -= 20
+
+        if self.collision_entity == "ship":
+            self.level = "universe"

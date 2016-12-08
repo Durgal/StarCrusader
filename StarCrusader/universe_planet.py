@@ -29,4 +29,4 @@ class UniversePlanet(pygame.sprite.Sprite):
     def update(self, spaceship_group, laser_group):
         for sprite in spaceship_group:
             if pygame.sprite.collide_mask(self, sprite):
-                print("Collided with planet")
+                sprite.level = "planet"

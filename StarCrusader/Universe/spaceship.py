@@ -56,6 +56,7 @@ class Spaceship(pygame.sprite.Sprite):
         self.sprite = Sprite('Sprites/spaceship_sheet.png', SPRITE_W, SPRITE_H)
         self.sprite_stopped = Sprite('Sprites/spaceship.png', SPRITE_W, SPRITE_H)
 
+        self.level = "none"
         self.position = vec(x, y)
         self.velocity = vec(INITIALIZE, INITIALIZE)
         self.acceleration = vec(INITIALIZE, INITIALIZE)
