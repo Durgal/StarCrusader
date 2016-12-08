@@ -120,10 +120,14 @@ class Planet(Level):
 
         if pygame.key.get_pressed()[pygame.K_w] != 0 and self.player.center_y:
             self.player.jump()
+            self.file.writeline(0,100)
+            self.file.writeline(1, 100)
+            self.file.writeline(2, 100)
+            self.file.writeline(3, 100)
 
         if pygame.key.get_pressed()[pygame.K_SPACE] != 0 and self.player.center_y:
             self.player.shoot(self.player.direction, self.laser_list)
-            self.file.readline(2)
+            print(self.file.readline(3))
 
         if pygame.key.get_pressed()[pygame.K_F3]:
             if self.DEBUG:
