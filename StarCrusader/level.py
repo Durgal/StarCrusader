@@ -13,6 +13,7 @@
 import math
 import random
 
+from Utilities.file_functions import File
 from Planet.ground import Ground
 from Planet.hero import Hero
 from Planet.pirate import *
@@ -89,6 +90,9 @@ class Planet(Level):
         self.ground = Ground(450, 698)
         self.laser_list = pygame.sprite.Group()
 
+        path = "statistics.txt"
+        self.file = File(path)
+
         # test entity creation
         self.entity_list = pygame.sprite.Group()
         self.entity_list.add(Fuel(700, 695))
@@ -118,6 +122,7 @@ class Planet(Level):
 
         if pygame.key.get_pressed()[pygame.K_SPACE] != 0 and self.player.center_y:
             self.player.shoot(self.player.direction, self.laser_list)
+            self.file.readline(2)
 
         if pygame.key.get_pressed()[pygame.K_F3]:
             if self.DEBUG:

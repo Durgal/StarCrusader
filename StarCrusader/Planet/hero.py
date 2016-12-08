@@ -172,5 +172,4 @@ class Hero(pygame.sprite.Sprite):
             self.health -= 20
 
         if self.collision_entity == "ship":
-            print(self.level)
             self.level = "universe"
