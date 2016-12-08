@@ -38,6 +38,9 @@ def main():
     # Set current level (Universe)
     current_level = level.Universe(screen)
 
+    # Set current level (Planet)
+    #current_level = level.Planet(screen)
+
     # Clock manages how fast updates occur
     clock = pygame.time.Clock()
 

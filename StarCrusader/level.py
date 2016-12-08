@@ -22,6 +22,7 @@ from Universe.asteroid import Asteroid
 from Universe.spaceship import Camera
 from Universe.spaceship import Spaceship
 from hud import Hud
+from universe_planet import UniversePlanet
 from item import *
 
 # Constants
@@ -194,14 +195,15 @@ class Universe(Level):
     def __init__(self, screen):
         self.spaceship_group = pygame.sprite.Group()
         self.laser_group = pygame.sprite.Group()
+        self.planet_group = pygame.sprite.Group()
         self.camera = Camera(WIDTH, HEIGHT)
         self.spaceship = Spaceship(self.spaceship_group, self.laser_group)
         self.screen = screen
         Level.__init__(self, self.spaceship)
         self.asteroid_image_set = []
         self.asteroid_damage_set = []
+        self.planet_image = pygame.image.load('Sprites/planet_universe.png')
         self.load_asteroid_data()
-
         self.player_chunk = self.spaceship.player_chunk
         self.current_rendered_chunks = []
         self.player_chunk_coords = [0, 0]
@@ -228,6 +230,26 @@ class Universe(Level):
         random_asteroid = random.randint(0, 5)
         return Asteroid(sprite_group, self.asteroid_image_set[random_asteroid], random.randint(lower_x, upper_x), random.randint(lower_y, upper_y), self.asteroid_damage_set[random_asteroid])
 
+    def generate_chunk_with_planet(self, chunk_x_coord, chunk_y_coord):
+        chunk_already_exists = False
+        chunk_sprite_group = pygame.sprite.Group()
+
+        for chunk in self.current_rendered_chunks:
+            if (chunk_x_coord, chunk_y_coord) in chunk:
+                chunk_already_exists = True
+
+        if not chunk_already_exists:
+            for sprite in self.new_chunk:
+                self.new_chunk.remove(sprite)
+
+            planet_offset_x = random.randint(100, 800)
+            planet_offset_y = random.randint(100, 800)
+
+            self.new_chunk.append(UniversePlanet(chunk_sprite_group, (chunk_x_coord * CHUNK_SIZE) + planet_offset_x, (chunk_y_coord * CHUNK_SIZE) + planet_offset_y, self.planet_image))
+
+            self.current_rendered_chunks.append(((chunk_x_coord, chunk_y_coord), chunk_sprite_group))
+
+    # TODO: Chunks seem important... lets move to separate module if time permits?
     def generate_chunk(self, chunk_x_coord, chunk_y_coord):
         chunk_already_exists = False
         chunk_sprite_group = pygame.sprite.Group()
@@ -240,7 +262,7 @@ class Universe(Level):
             for sprite in self.new_chunk:
                 self.new_chunk.remove(sprite)
 
-            asteroid_count = random.randint(2, 10)
+            asteroid_count = random.randint(2, 7)
 
             for count in range(asteroid_count):
                 self.new_chunk.append(self.generate_asteroid(chunk_sprite_group, (chunk_x_coord * CHUNK_SIZE), ((chunk_x_coord * CHUNK_SIZE) + CHUNK_SIZE),
@@ -265,16 +287,33 @@ class Universe(Level):
         self.player_coords[X_COORD] = self.spaceship.rect.x
         self.player_coords[Y_COORD] = self.spaceship.rect.y
 
+    def generate_seed(self):
+        chunk_to_generate = 0
+        chunk_seed = random.randint(0, 900)
+
+        if chunk_seed % 5 == 0:
+            chunk_to_generate = 1
+
+        return chunk_to_generate
+
     def generate_nearby_chunks(self):
-        self.generate_chunk(self.player_chunk_coords[X_COORD], self.player_chunk_coords[Y_COORD])
-        self.generate_chunk(self.player_chunk_coords[X_COORD] + RENDER_DISTANCE, self.player_chunk_coords[Y_COORD])
-        self.generate_chunk(self.player_chunk_coords[X_COORD] - RENDER_DISTANCE, self.player_chunk_coords[Y_COORD])
-        self.generate_chunk(self.player_chunk_coords[X_COORD], self.player_chunk_coords[Y_COORD] + RENDER_DISTANCE)
-        self.generate_chunk(self.player_chunk_coords[X_COORD], self.player_chunk_coords[Y_COORD] - RENDER_DISTANCE)
-        self.generate_chunk(self.player_chunk_coords[X_COORD] - RENDER_DISTANCE, self.player_chunk_coords[Y_COORD] + RENDER_DISTANCE)
-        self.generate_chunk(self.player_chunk_coords[X_COORD] + RENDER_DISTANCE, self.player_chunk_coords[Y_COORD] - RENDER_DISTANCE)
-        self.generate_chunk(self.player_chunk_coords[X_COORD] - RENDER_DISTANCE, self.player_chunk_coords[Y_COORD] - RENDER_DISTANCE)
-        self.generate_chunk(self.player_chunk_coords[X_COORD] + RENDER_DISTANCE, self.player_chunk_coords[Y_COORD] + RENDER_DISTANCE)
+        middle = (self.player_chunk_coords[X_COORD], self.player_chunk_coords[Y_COORD])
+        top = (self.player_chunk_coords[X_COORD], self.player_chunk_coords[Y_COORD] - RENDER_DISTANCE)
+        bottom = (self.player_chunk_coords[X_COORD], self.player_chunk_coords[Y_COORD] + RENDER_DISTANCE)
+        left = (self.player_chunk_coords[X_COORD] - RENDER_DISTANCE, self.player_chunk_coords[Y_COORD])
+        right = (self.player_chunk_coords[X_COORD] + RENDER_DISTANCE, self.player_chunk_coords[Y_COORD])
+        top_right = (self.player_chunk_coords[X_COORD] + RENDER_DISTANCE, self.player_chunk_coords[Y_COORD] - RENDER_DISTANCE)
+        bottom_right = (self.player_chunk_coords[X_COORD] + RENDER_DISTANCE, self.player_chunk_coords[Y_COORD] + RENDER_DISTANCE)
+        top_left = (self.player_chunk_coords[X_COORD] - RENDER_DISTANCE, self.player_chunk_coords[Y_COORD] - RENDER_DISTANCE)
+        bottom_left = (self.player_chunk_coords[X_COORD] - RENDER_DISTANCE, self.player_chunk_coords[Y_COORD] + RENDER_DISTANCE)
+
+        chunks_to_generate = [top, bottom, left, right, top_right, top_left, bottom_right, bottom_left]
+
+        for chunk in range(len(chunks_to_generate)):
+            if self.generate_seed() == 0:
+                self.generate_chunk(chunks_to_generate[chunk][X_COORD], chunks_to_generate[chunk][Y_COORD])
+            elif self.generate_seed() == 1:
+                self.generate_chunk_with_planet(chunks_to_generate[chunk][X_COORD], chunks_to_generate[chunk][Y_COORD])
 
     def remove_far_chunks(self):
         for chunk in self.current_rendered_chunks:
@@ -335,11 +374,13 @@ class Universe(Level):
         if 0 == len(self.current_rendered_chunks):
             self.update_current_chunk_coords()
             self.generate_nearby_chunks()
+            self.current_rendered_chunks.sort()
 
         if self.player_moved_chunks():
             self.update_current_chunk_coords()
             self.generate_nearby_chunks()
             self.remove_far_chunks()
+            self.current_rendered_chunks.sort()
 
     def load_asteroid_data(self):
         image1 = pygame.image.load('Sprites/asteroid1.png')
@@ -370,6 +411,9 @@ class Universe(Level):
     def render_level(self, fps):
         self.camera.update(self.spaceship)
 
+        for planet in self.planet_group:
+            self.screen.blit(planet.image, self.camera.apply(planet))
+
         for data in self.current_rendered_chunks:
             for asteroid in data[ASTEROID_INDEX]:
                 self.screen.blit(asteroid.image, self.camera.apply(asteroid))
@@ -382,8 +426,8 @@ class Universe(Level):
 
         self.hud.draw_hud(self.screen)
 
-        #self.spaceship.debugging(self.screen, fps)
-        #self.debugging()
+        self.spaceship.debugging(self.screen, fps)
+        self.debugging()
 
     def set_dt(self, dt):
         self.spaceship.set_dt(dt)

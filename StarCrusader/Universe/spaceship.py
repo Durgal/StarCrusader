@@ -12,6 +12,8 @@
 #########################################
 
 import pygame
+from Utilities.sprite_functions import Sprite
+from Utilities.audio_functions import Audio
 vec = pygame.math.Vector2
 
 HALF = 2
@@ -38,6 +40,12 @@ LASER_OFFSET = vec(0, -20)
 MIN = 0
 INITIALIZE = 0
 FULL_ROTATION = 360
+FUEL_ANIMATION_TIME = 2.5
+SPRITE_W = 40
+SPRITE_H = 65
+
+snd_laser = "Audio/laser.wav"
+snd_thrust = "Audio/thrust.wav"
 
 
 class Spaceship(pygame.sprite.Sprite):
@@ -45,28 +53,35 @@ class Spaceship(pygame.sprite.Sprite):
         self.group = sprite_group
         self.laser_group = laser_group
         pygame.sprite.Sprite.__init__(self, self.group)
-        self.image = pygame.image.load('Sprites/spaceship.png')
-        self.rect = self.image.get_rect()
+        self.sprite = Sprite('Sprites/spaceship_sheet.png', SPRITE_W, SPRITE_H)
+        self.sprite_stopped = Sprite('Sprites/spaceship.png', SPRITE_W, SPRITE_H)
+
         self.position = vec(x, y)
         self.velocity = vec(INITIALIZE, INITIALIZE)
         self.acceleration = vec(INITIALIZE, INITIALIZE)
-        self.rect.center = self.position
         self.rotation = INITIALIZE
         self.rot_speed = INITIALIZE
         self.dt = INITIALIZE
         self.dead = False
         self.last_shot = INITIALIZE
+        self.is_accel = False
 
         self.fuel = FUEL_CAPACITY
         self.health = HEALTH_CAPACITY
         self.energy = ENERGY_CAPACITY
         self.treasure = INITIALIZE
 
+        self.image = self.sprite.get_image(0, 0)
+        self.rect = self.image.get_rect()
+        self.rect.center = self.position
         self.orig_img = self.image
         self.orig_center = self.rect.center
 
         self.player_chunk = pygame.Rect(INITIALIZE, INITIALIZE, WIDTH, HEIGHT)
         self.player_chunk.center = self.position
+
+        self.snd_laser = Audio(snd_laser)
+        self.snd_thrust = Audio(snd_thrust)
 
     def get_event(self, event):
         self.rot_speed = INITIALIZE
@@ -74,12 +89,17 @@ class Spaceship(pygame.sprite.Sprite):
             if ACCELERATE == event:
                 self.acceleration = vec(MIN, -ACCELERATION_RATE)
                 self.deplete_fuel()
-            if ROTATE_LEFT == event:
-                self.rot_speed = ROTATION_RATE
-                self.rotate_sprite()
-            if ROTATE_RIGHT == event:
-                self.rot_speed = -ROTATION_RATE
-                self.rotate_sprite()
+                self.image = self.sprite.get_image(0, 0)
+                self.sprite.animate(pygame.time.get_ticks() * FUEL_ANIMATION_TIME)
+                self.is_accel = True
+                self.snd_thrust.play()
+
+        if ROTATE_LEFT == event:
+            self.rot_speed = ROTATION_RATE
+            self.rotate_sprite()
+        if ROTATE_RIGHT == event:
+            self.rot_speed = -ROTATION_RATE
+            self.rotate_sprite()
 
     def shoot_laser(self):
         if MIN < self.energy:
@@ -91,6 +111,7 @@ class Spaceship(pygame.sprite.Sprite):
                 rotation = self.rotation
                 Laser(self.laser_group, position, velocity, rotation)
                 self.energy -= ENERGY_DEPLETION_RATE
+                self.snd_laser.play()
 
     def deplete_fuel(self):
         self.fuel -= (FUEL_DEPLETION_RATE * self.dt)
@@ -167,9 +188,25 @@ class Spaceship(pygame.sprite.Sprite):
         self.rect.center = self.position
         self.rot_speed = INITIALIZE
 
+        if self.is_accel is not True:
+            self.image = self.sprite_stopped.get_image(0, 0)
+            self.rect = self.image.get_rect()
+            self.rect.center = self.position
+            self.orig_img = self.image
+            self.orig_center = self.rect.center
+            self.rotate_sprite()
+        else:
+            self.image = self.sprite.get_image(0, 0)
+            self.rect = self.image.get_rect()
+            self.rect.center = self.position
+            self.orig_img = self.image
+            self.orig_center = self.rect.center
+            self.rotate_sprite()
+
         self.check_death()
         self.player_chunk.centerx = self.position[POSITION_X]
         self.player_chunk.centery = self.position[POSITION_Y]
+        self.is_accel = False
 
 
 class Laser(pygame.sprite.Sprite):

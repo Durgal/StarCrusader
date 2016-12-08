@@ -12,7 +12,7 @@
 #########################################
 
 import random
-
+from Utilities.audio_functions import Audio
 import pygame
 
 ASTEROID1 = 1
@@ -22,6 +22,7 @@ ASTEROID4 = 4
 ASTEROID5 = 5
 ASTEROID6 = 6
 
+snd_explode = "Audio/explode.wav"
 
 class Asteroid(pygame.sprite.Sprite):
     def __init__(self, sprite_group, image, x, y, damage):
@@ -42,6 +43,8 @@ class Asteroid(pygame.sprite.Sprite):
         self.rot_speed = random.randint(4, 20)
 
         self.damage = damage
+
+        self.snd_explode = Audio(snd_explode)
 
     def set_dt(self, dt):
         self.dt = dt
@@ -65,8 +68,10 @@ class Asteroid(pygame.sprite.Sprite):
             if pygame.sprite.collide_mask(self, sprite):
                 self.kill_asteroid()
                 sprite.collided(self.damage)
+                self.snd_explode.play()
 
         for laser in laser_group:
             if pygame.sprite.collide_mask(self, laser):
                 self.kill_asteroid()
                 laser.collided()
+                self.snd_explode.play()
