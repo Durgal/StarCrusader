@@ -75,12 +75,15 @@ class Level:
     def get_type(self):
         return self.level_type
 
+    def get_player(self):
+        return self.player
+
 
 class Planet(Level):
     """ Generate Planet level """
     def __init__(self, screen):
-        player = Hero()
-        Level.__init__(self, player)
+        self.player = Hero()
+        Level.__init__(self, self.player)
         self.DEBUG = False
         self.screen = screen
         self.time = 0
@@ -195,6 +198,7 @@ class Universe(Level):
         self.planet_group = pygame.sprite.Group()
         self.camera = Camera(WIDTH, HEIGHT)
         self.spaceship = Spaceship(self.spaceship_group, self.laser_group)
+        self.player = self.spaceship
         self.screen = screen
         Level.__init__(self, self.spaceship)
         self.asteroid_image_set = []

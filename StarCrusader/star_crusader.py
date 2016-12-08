@@ -13,9 +13,6 @@ import pygame
 from pygame.locals import *
 from gameplay import Gameplay
 
-
-HEIGHT = 900
-WIDTH = 900
 FPS = 60
 
 
@@ -24,12 +21,8 @@ def main():
     pygame.mixer.pre_init(44100, -16, 2, 2048)
     pygame.init()
 
-    # Screen initialization
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    pygame.display.set_caption("Star Crusader")
-
     # Initialize gameplay
-    game = Gameplay(screen)
+    game = Gameplay()
 
     # Start game clock
     clock = pygame.time.Clock()
