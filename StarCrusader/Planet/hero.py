@@ -13,17 +13,16 @@
 
 import pygame
 
+from Planet.laser import Laser
 from Utilities.sprite_functions import Sprite
-from laser import Laser
-from Utilities.audio_functions import Audio
 
 STARTING_POS_X = 450
 STARTING_POS_Y = 655
 
 #Audio
-snd_jump = "Audio/jump.wav"
-snd_item = "Audio/item.wav"
-snd_laser = "Audio/laser.wav"
+snd_jump = "../Audio/jump.wav"
+snd_item = "../Audio/item.wav"
+snd_laser = "../Audio/laser.wav"
 
 PLAYER_SPEED = .0015
 
@@ -60,9 +59,9 @@ class Hero(pygame.sprite.Sprite):
         self.rect.x = self.center_x
         self.rect.y = self.center_y
 
-        self.snd_jump = Audio(snd_jump)
-        self.snd_item = Audio(snd_item)
-        self.snd_laser = Audio(snd_laser)
+        #self.snd_jump = Audio(snd_jump)
+        #self.snd_item = Audio(snd_item)
+        #self.snd_laser = Audio(snd_laser)
 
     def get_pos(self):
         return(self.rect.x,self.rect.y)
@@ -103,12 +102,12 @@ class Hero(pygame.sprite.Sprite):
             laser = Laser(self.get_x(), self.get_y())
             laser.set_direction(self.direction)
             laser_list.add(laser)
-            self.snd_laser.play()
+            #self.snd_laser.play()
 
     def jump(self):
         if self.on_ground == True:
             if self.velocity == 0:
-                self.snd_jump.play()
+                #self.snd_jump.play()
                 self.velocity = 6
 
     def stop(self ,time):
@@ -150,7 +149,7 @@ class Hero(pygame.sprite.Sprite):
 
         if self.collision_entity == "item":
             object.kill()
-            self.snd_item.play()
+            #self.snd_item.play()
 
             if object.sub_type == "fuel":
                 self.fuel += 5

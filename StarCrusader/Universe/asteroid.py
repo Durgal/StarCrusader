@@ -11,9 +11,9 @@
 #               for asteroid class
 #########################################
 
-import pygame
 import random
 from Utilities.audio_functions import Audio
+import pygame
 
 ASTEROID1 = 1
 ASTEROID2 = 2
