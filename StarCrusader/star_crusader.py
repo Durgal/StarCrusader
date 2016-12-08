@@ -11,19 +11,12 @@
 
 import pygame
 from pygame.locals import *
-import level
+from gameplay import Gameplay
 
-
-RED = (255, 0, 0)
-YELLOW = (0, 255, 0)
-BLUE = (0, 0, 255)
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
 
 HEIGHT = 900
 WIDTH = 900
 FPS = 60
-MS = 1000
 
 
 def main():
@@ -35,13 +28,10 @@ def main():
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Star Crusader")
 
-    # Set current level (Universe)
-    current_level = level.Universe(screen)
+    # Initialize gameplay
+    game = Gameplay(screen)
 
-    # Set current level (Planet)
-    #current_level = level.Planet(screen)
-
-    # Clock manages how fast updates occur
+    # Start game clock
     clock = pygame.time.Clock()
 
     # End loop condition
@@ -54,27 +44,19 @@ def main():
                 loop = False
 
         # Check for level change
-        if current_level.get_type() == "universe":
-            current_level = level.Universe(screen)
-        if current_level.get_type() == "planet":
-            current_level = level.Planet(screen)
+        game.change_level()
 
         # Limit to 60 FPS
-        milliseconds = clock.tick(FPS)
-
-        # For Spaceship
-        dt = milliseconds / MS
-        current_level.set_dt(dt)
+        game.set_fps(FPS,clock)
 
         # Checks for input based on player type (ship vs hero)
-        current_level.get_input()
+        game.get_input()
 
-        # Update each sprite groups and current level
-        current_level.update()
+        # Update each sprite groups in current level
+        game.update()
 
         # Render level
-        screen.fill(BLACK)
-        current_level.render_level(clock.get_fps())
+        game.render_level(clock.get_fps())
 
         # Update screen
         pygame.display.flip()
