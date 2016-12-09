@@ -252,7 +252,7 @@ class Universe(Level):
             for sprite in self.new_chunk:
                 self.new_chunk.remove(sprite)
 
-            asteroid_count = random.randint(2, 7)
+            asteroid_count = random.randint(5, 15)
 
             for count in range(asteroid_count):
                 self.new_chunk.append(self.generate_asteroid(chunk_sprite_group, (chunk_x_coord * CHUNK_SIZE), ((chunk_x_coord * CHUNK_SIZE) + CHUNK_SIZE),
@@ -418,8 +418,8 @@ class Universe(Level):
 
         self.hud.draw_hud(self.screen)
 
-        self.spaceship.debugging(self.screen, fps)
-        self.debugging()
+        #self.spaceship.debugging(self.screen, fps)
+        #self.debugging()
 
     def set_dt(self, dt):
         self.spaceship.set_dt(dt)

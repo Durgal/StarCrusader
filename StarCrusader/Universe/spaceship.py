@@ -86,7 +86,7 @@ class Spaceship(pygame.sprite.Sprite):
 
     def get_event(self, event):
         self.rot_speed = INITIALIZE
-        if MIN <= self.fuel or self.dead:
+        if MIN <= self.fuel and not self.dead:
             if ACCELERATE == event:
                 self.acceleration = vec(MIN, -ACCELERATION_RATE)
                 self.deplete_fuel()
@@ -103,7 +103,7 @@ class Spaceship(pygame.sprite.Sprite):
             self.rotate_sprite()
 
     def shoot_laser(self):
-        if MIN < self.energy:
+        if MIN < self.energy and not self.dead:
             now = pygame.time.get_ticks()
             if now - self.last_shot > FIRE_RATE:
                 self.last_shot = now
