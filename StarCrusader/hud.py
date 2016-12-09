@@ -87,7 +87,10 @@ class Hud(pygame.sprite.Sprite):
             else:
                 pygame.draw.rect(screen, WHITE, self.health_rect)
         if self.draw_energy:
-            pygame.draw.rect(screen, WHITE, self.energy_rect)
+            if LOW_AMOUNT >= self.energy_width:
+                pygame.draw.rect(screen, RED, self.energy_rect)
+            else:
+                pygame.draw.rect(screen, WHITE, self.energy_rect)
 
         if pygame.font:
             font = pygame.font.Font("courbd.ttf", 17)
