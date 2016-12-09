@@ -56,10 +56,17 @@ Provide as much of the following information as possible:
 Contact the Contributors
 ------------------------
 In order to contact project leaders you may use their joint email, starcrusader.game@gmail.com
- 
- 
-Project Goals
--------------
+
+
+Future Features/Updates:
+------------------------
+* Incorporate menu system.
+* Add high scores.
+* Rework world generation.
+* Add rotation to spaceship when on planet.
+* Update image of spaceship when on planet.
+* Add background asteroids in universe level.
+* Add parallax to universe level.
 
 
 License
