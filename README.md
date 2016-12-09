@@ -5,12 +5,16 @@
  avoid the asteroids and land on planets to get fuel and collect treasure. Planets and randomly generated resource-filled asteroids 
  contain fuel/health/energy to aid the player.
 
+Build / Run Instructions
+------------------
+    1. Install...
+      +python 3.4.2
+      +pygame
+    2. Fork from the repository
+    3. From the command prompt type git clone git@github.com:cs360f16/StarCrusader.git
+    4. Change to Star Crusader directory
+    5. Type python3 star_crusader.py &
 
-
-Dependencies
-------------
- In order to build, run, or contribute to this project you will need it's dependencies: python version 3.4.2 and pygame.
- 
  
   
 Contributing to Star Crusader
@@ -22,7 +26,6 @@ Contributing to Star Crusader
  request.  Provide the same information you provided with the feature request as well.
   
   In order for a new feature to be committed, it must follow [PEP8 Python Coding Standards.](https://www.python.org/dev/peps/pep-0008/)
-  
   
   
 Request a Feature
@@ -50,11 +53,9 @@ Provide as much of the following information as possible:
 * Will a screenshot show the bug?
 
 
-
 Contact the Contributors
 ------------------------
-In order to contact the contributors you may use the contributors' joint email, starcrusader.game@gmail.com
- 
+In order to contact project leaders you may use their joint email, starcrusader.game@gmail.com
  
  
 Project Goals
