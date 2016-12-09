@@ -13,7 +13,7 @@ import pygame
 from pygame.locals import *
 
 
-class Title:
+class EndDisplay:
 
     def __init__(self, text, pos):
         self.text = text
@@ -71,7 +71,7 @@ class MenuOption:
 pygame.init()
 screen = pygame.display.set_mode((900, 900))
 title_font = pygame.font.Font(None, 100)
-titles = [Title("GAME OVER", (250, 100))]
+titles = [EndDisplay("GAME OVER", (250, 100))]
 menu_font = pygame.font.Font(None, 50)
 options = [MenuOption("PLAY AGAIN", (250, 200)),  MenuOption("HIGH SCORES", (250, 250)),
            MenuOption("EXIT", (250, 300))]
