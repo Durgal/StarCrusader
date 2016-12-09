@@ -35,7 +35,7 @@ class Gameplay:
         pygame.display.set_caption("Star Crusader")
 
         # Games current level
-        self.current_level = level.Universe(self.screen)
+        self.current_level = level.Planet(self.screen)
 
         # External file path saves player data
         path = "statistics.txt"
