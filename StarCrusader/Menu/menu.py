@@ -73,7 +73,7 @@ pygame.init()
 screen = pygame.display.set_mode((900, 900))
 title_font = pygame.font.Font(None, 70)
 titles = [Title("STAR CRUSADER", (250, 100))]
-menu_font = pygame.font.Font(None, 50)
+menu_font = pygame.font.Font(None, 51) #changed to 51 to commit
 options = [MenuOption("PLAY GAME", (250, 200)),  MenuOption("HIGH SCORES", (250, 250)),
            MenuOption("EXIT", (250, 300))]
 
