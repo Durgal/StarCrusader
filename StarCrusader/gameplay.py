@@ -35,11 +35,13 @@ class Gameplay:
         pygame.display.set_caption("Star Crusader")
 
         # Games current level
-        self.current_level = level.Universe(self.screen)
+        self.current_level = level.Planet(self.screen)
 
         # External file path saves player data
         path = "statistics.txt"
         self.file = File(path)
+        highscore = "highscores.txt"
+        self.highscores = highscore
 
     def load_player_data(self):
         player = self.current_level.get_player()
@@ -54,6 +56,10 @@ class Gameplay:
         self.file.writeline(1, round(player.health))
         self.file.writeline(2, round(player.energy))
         self.file.writeline(3, round(player.treasure))
+
+    def save_highscore(self, score): # TODO: read current scores, sort new score into list
+        line_no = self.highscores.numlines()
+        self.highscores.writeline(line_no, score)
 
     def change_level(self):
         if self.current_level.get_type() == "universe":

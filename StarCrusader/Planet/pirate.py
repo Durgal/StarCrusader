@@ -12,8 +12,10 @@
 #########################################
 
 import pygame
-
+import random
+from item import *
 from Utilities.sprite_functions import Sprite
+
 
 
 class Pirate(pygame.sprite.Sprite):
@@ -44,6 +46,9 @@ class Pirate(pygame.sprite.Sprite):
         self.sprite.animate(time)
         self.direction = direction
 
+        self.x = self.rect.x
+        self.y = self.rect.y
+
     def change_direction(self):
         if self.direction == "R":
             self.direction = "L"
@@ -54,11 +59,16 @@ class Pirate(pygame.sprite.Sprite):
 
         self.sprite.flip_image()
 
-    def collision_check(self, laser_list):
+    def collision_check(self, laser_list, entity_list):
         for laser in laser_list:
             if self.sprite.get_collision(self.rect.x, self.rect.y, self.sprite.width, self.sprite.height, laser.rect.x, laser.rect.y, laser.sprite.width, laser.sprite.height):
                 laser.kill()
-                self.kill()
+                self.die(entity_list)
+
+    def die(self, entity_list):
+        self.kill()
+        item_list = [Fuel(self.x,self.y),Health(self.x,self.y),Energy(self.x,self.y),Treasure(self.x,self.y)]
+        entity_list.add(random.choice(item_list))
 
 
 class Pirate_Spawner:

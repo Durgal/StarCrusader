@@ -21,8 +21,8 @@ from Planet.star_field import Star
 from Universe.asteroid import Asteroid
 from Universe.spaceship import Camera
 from Universe.spaceship import Spaceship
+from Universe.universe_planet import UniversePlanet
 from hud import Hud
-from universe_planet import UniversePlanet
 from item import *
 
 # Constants
@@ -95,10 +95,10 @@ class Planet(Level):
 
         # test entity creation
         self.entity_list = pygame.sprite.Group()
-        self.entity_list.add(Fuel(700, 695))
-        self.entity_list.add(Energy(600, 675))
-        self.entity_list.add(Energy(500, 665))
         self.entity_list.add(Ship_Landed(150,650))
+        # self.entity_list.add(Fuel(700, 695))
+        # self.entity_list.add(Energy(600, 675))
+        # self.entity_list.add(Energy(500, 665))
 
         # Initialize pirate spawners
         self.spawner_one = Pirate_Spawner(-10, 780,"R")
@@ -123,12 +123,6 @@ class Planet(Level):
         if pygame.key.get_pressed()[pygame.K_SPACE] != 0 and self.player.center_y:
             self.player.shoot(self.player.direction, self.laser_list)
 
-        if pygame.key.get_pressed()[pygame.K_F3]:
-            if self.DEBUG:
-                self.DEBUG = False
-            else:
-                self.DEBUG = True
-
     def update(self):
         """ Update all entities on the Planet -- collisions, rotation, gravity etc """
         self.time += 1                                      # increment time
@@ -148,7 +142,7 @@ class Planet(Level):
             self.player.collision_check(object)
             if object.type == "enemy":                  # animate / collision enemies
                 object.animate(self.time, object.direction)
-                object.collision_check(self.laser_list)
+                object.collision_check(self.laser_list, self.entity_list)
             if object.type == "ship":
                 self.change(self.player.get_level())    # change level if collision with ship
                 #object.rotate(30)                      # rotate spaceship TODO: get this to work
@@ -222,10 +216,6 @@ class Universe(Level):
             self.spaceship.get_event('rotate_r')
         if pygame.key.get_pressed()[pygame.K_SPACE] != 0:
             self.spaceship.shoot_laser()
-
-        # Switch level test
-        if pygame.key.get_pressed()[pygame.K_m]:
-            self.change("planet")
 
     def generate_asteroid(self, sprite_group, lower_x, upper_x, lower_y, upper_y):
         random_asteroid = random.randint(0, 5)

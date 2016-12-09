@@ -29,8 +29,8 @@ class Item(pygame.sprite.Sprite):
         self.angle = 0
 
         self.image = self.sprite.get_image(0, 0)
-        self.center_x = x - self.image.get_size()[0] / 2
-        self.center_y = y - self.image.get_size()[1] / 2
+        self.center_x = x + self.image.get_size()[0] / 2
+        self.center_y = y + self.image.get_size()[1] / 2
         self.rect = self.image.get_rect()
         self.rect.x = self.center_x
         self.rect.y = self.center_y
@@ -48,6 +48,7 @@ class Fuel(Item):
         self.sprite = Sprite("Sprites/Item_Fuel.png", 36, 36)
         self.image = self.sprite.get_image(0, 0)
 
+
 class Health(Item):
 
     def __init__(self, x, y):
@@ -56,6 +57,7 @@ class Health(Item):
         self.sub_type = "health"
         self.sprite = Sprite("Sprites/Item_Health.png", 36, 36)
         self.image = self.sprite.get_image(0, 0)
+
 
 class Energy(Item):
 
@@ -66,11 +68,12 @@ class Energy(Item):
         self.sprite = Sprite("Sprites/Item_Energy.png", 36, 36)
         self.image = self.sprite.get_image(0, 0)
 
+
 class Treasure(Item):
 
     def __init__(self, x, y):
 
         super().__init__(x, y)
-        self.type = "treasure"
+        self.sub_type = "treasure"
         self.sprite = Sprite("Sprites/Item_Treasure.png", 36, 36)
         self.image = self.sprite.get_image(0, 0)
