@@ -46,8 +46,8 @@ class Pirate(pygame.sprite.Sprite):
         self.sprite.animate(time)
         self.direction = direction
 
-        self.c_x = self.rect.x + self.image.get_size()[0] / 2
-        self.c_y = self.rect.y + self.image.get_size()[1] / 2
+        self.x = self.rect.x
+        self.y = self.rect.y
 
     def change_direction(self):
         if self.direction == "R":
@@ -67,7 +67,7 @@ class Pirate(pygame.sprite.Sprite):
 
     def die(self, entity_list):
         self.kill()
-        item_list = [Fuel(self.c_x,self.c_y),Health(self.c_x,self.c_y),Energy(self.c_x,self.c_y),Treasure(self.c_x,self.c_y)]
+        item_list = [Fuel(self.x,self.y),Health(self.x,self.y),Energy(self.x,self.y),Treasure(self.x,self.y)]
         entity_list.add(random.choice(item_list))
 
 
