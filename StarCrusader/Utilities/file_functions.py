@@ -40,5 +40,12 @@ class File():
         o_file = open(self.file, 'w+')
         o_file.writelines(self.data)
 
+    def numlines(self):
+        " Returns the number of lines in a file "
+        with open(self.file) as f:
+            for i, l in enumerate(f):
+                pass
+        return i + 1
+
     def destroy(self):
         pass #TODO: remove text file
